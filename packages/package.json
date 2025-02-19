@@ -1,0 +1,18 @@
+{
+  "name": "monorepo",
+  "version": "1.0.0",
+  "scripts": {
+    "dev:Backend": "pnpm --filter Backend dev",
+    "dev:Frontend": "pnpm --filter Frontend dev",
+    "dev": "concurrently \"pnpm dev:Frontend\" \"pnpm dev:Backend\""
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "dependencies": {
+    "pnpm": "^10.4.1"
+  }
+}
