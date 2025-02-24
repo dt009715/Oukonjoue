@@ -2,9 +2,10 @@ import { Router } from "express";
 
 import artistesRoutes from "./artistes.routes";
 import authRoutes from "./auth.routes";
-import userRoutes from "./user.routes";
 import contactRoutes from "./contact.routes";
+import homeRoutes from "./home.routes";
 import institutionsRoutes from "./institutions.routes";
+import userRoutes from "./user.routes";
 
 const router = Router();
 
