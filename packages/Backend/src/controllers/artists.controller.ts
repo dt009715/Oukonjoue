@@ -5,7 +5,7 @@ import {
   getAllArtists,
   getArtistById,
   getArtistsByCategory,
-} from "../models/artists.model";
+} from "../models/artist.model";
 
 export const getArtists = async (
   req: Request,
@@ -16,12 +16,11 @@ export const getArtists = async (
     res.json(institutions);
   } catch (error) {
     console.error("Erreur serveur:", error);
-    res
-      .status(500)
-      .json({
-        message: "Erreur lors de la récupération des artistes",
-        error: error.message,
-      });
+    const err = error as Error;
+    res.status(500).json({
+      message: "Erreur lors de la récupération des artistes",
+      error: err.message,
+    });
   }
 };
 
@@ -29,17 +28,17 @@ export const getArtist = async (req: Request, res: Response): Promise<void> => {
   try {
     const institution = await getArtistById(req.params.id);
     if (!institution) {
-      return res.status(404).json({ message: "artiste non trouvée" });
+      res.status(404).json({ message: "artiste non trouvée" });
+      return;
     }
     res.json(institution);
   } catch (error) {
     console.error("Erreur serveur:", error);
-    res
-      .status(500)
-      .json({
-        message: "Erreur lors de la récupération de l'artiste",
-        error: error.message,
-      });
+    const err = error as Error;
+    res.status(500).json({
+      message: "Erreur lors de la récupération de l'artiste",
+      error: err.message,
+    });
   }
 };
 
@@ -50,18 +49,18 @@ export const getArtistsCate = async (
   try {
     const institution = await getArtistsByCategory(req.params.category);
     if (!institution) {
-      return res.status(404).json({ message: "artiste non trouvée" });
+      res.status(404).json({ message: "artiste non trouvée" });
+      return;
     }
     res.json(institution);
   } catch (error) {
     console.error("Erreur serveur:", error);
-    res
-      .status(500)
-      .json({
-        message:
-          "Erreur lors de la récupération de l'artiste en fonction de sa catégorie",
-        error: error.message,
-      });
+    const err = error as Error;
+    res.status(500).json({
+      message:
+        "Erreur lors de la récupération de l'artiste en fonction de sa catégorie",
+      error: err.message,
+    });
   }
 };
 
@@ -74,12 +73,11 @@ export const createNewArtist = async (
     res.status(201).json(institution);
   } catch (error) {
     console.error("Erreur de création:", error);
-    res
-      .status(400)
-      .json({
-        message: "Erreur de création de l'artiste",
-        error: error.message,
-      });
+    const err = error as Error;
+    res.status(400).json({
+      message: "Erreur de création de l'artiste",
+      error: err.message,
+    });
   }
 };
 
@@ -92,11 +90,10 @@ export const deleteOneArtist = async (
     res.json({ message: "artiste supprimée avec succès" });
   } catch (error) {
     console.error("Erreur serveur:", error);
-    res
-      .status(500)
-      .json({
-        message: "Erreur lors de la suppression de l'artiste ",
-        error: error.message,
-      });
+    const err = error as Error;
+    res.status(500).json({
+      message: "Erreur lors de la suppression de l'artiste",
+      error: err.message,
+    });
   }
 };

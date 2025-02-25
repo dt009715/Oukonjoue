@@ -1,13 +1,14 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import dotenv from "dotenv";
 import express from "express";
 
-import { env } from "./config/env";
 import routes from "./routes/index.routes";
 
+dotenv.config();
 // Creation instance app express
 const app = express();
-const { PORT, FRONTEND_URL } = env;
+const { PORT, FRONTEND_URL } = process.env;
 
 app.use(cookieParser());
 // Configuration CORS pour permettre les requetes de toutes les origines

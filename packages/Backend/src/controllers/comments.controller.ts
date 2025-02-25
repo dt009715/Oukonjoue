@@ -1,16 +1,16 @@
 import { and, eq } from "drizzle-orm";
 import { Request, Response } from "express";
 import { db } from "../config/pool";
-import { NewComment } from "../entities/Comment";
+import { NewComment } from "../entities/comment";
 import { comments } from "../schemas";
 import { logger } from "../utils";
 
 export const getCommentsByInstitution = async (req: Request, res: Response) => {
   try {
-    const { postId } = req.params;
+    const { parentId } = req.params;
 
     const commentList = await db.query.comments.findMany({
-      where: eq(comments.postId, postId),
+      where: eq(comments.commentId, parentId),
       orderBy: (comments) => comments.createdAt.desc(),
       with: {
         user: {

@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import artistesRoutes from "./artistes.routes";
+import artistesRoutes from "./artists.routes";
 import authRoutes from "./auth.routes";
 import contactRoutes from "./contact.routes";
 import homeRoutes from "./home.routes";

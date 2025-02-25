@@ -2,7 +2,7 @@
   "name": "monorepo",
   "version": "1.0.0",
   "scripts": {
-    "dev:backend": "pnpm --filter backend dev",
+    "dev:backend": " cd packages/backend && npm run dev",
     "dev:frontend": "pnpm --filter frontend dev",
     "dev": "concurrently \"pnpm dev:frontend\" \"pnpm dev:backend\""
   },
@@ -10,6 +10,9 @@
     "packages/*"
   ],
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.8",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
     "concurrently": "^9.1.2"
   },
   "dependencies": {
