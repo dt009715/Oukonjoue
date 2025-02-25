@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { contact } from "../controllers/contact.controller";
+import { sendEmail } from "../controllers/mail.controller";
 
 const router = Router();
 
-// [POST] http://localhost:3000/contact
-router.post("/register", contact);
+// [POST] http://localhost:3000/sendEmail
+router.post("/send-email", sendEmail);
 
 export default router;
