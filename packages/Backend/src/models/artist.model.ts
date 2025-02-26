@@ -1,21 +1,46 @@
 import prisma from "../config/database";
 
+// Get all artists
 export const getAllArtists = async () => {
-  return await prisma.institution.findAll();
+  return await prisma.artists.findMany();
 };
 
-export const getArtistById = async (id) => {
-  return await prisma.institution.findUnique({ where: { id: parseInt(id) } });
+// Get artist by ID
+export const getArtistById = async (id: string) => {
+  return await prisma.artists.findUnique({
+    where: { id: Number(id) }, // Convert id to number
+  });
 };
 
-export const getArtistsByCategory = async (category) => {
-  return await prisma.institution.findMany(category);
+// Get artists by category
+export const getArtistsByCategory = async (category: string) => {
+  return await prisma.artists.findMany({
+    where: { category },
+  });
 };
 
-export const createArtist = async (data) => {
-  return await prisma.institution.create({ data });
+// Create a new artist
+export const createArtist = async (data: {
+  name: string;
+  address: string;
+  phone: string;
+  mail: string;
+  category: string;
+}) => {
+  return await prisma.artists.create({
+    data: {
+      name: data.name,
+      address: data.address,
+      phone: data.phone,
+      mail: data.mail,
+      category: data.category,
+    },
+  });
 };
 
-export const deleteArtist = async (id) => {
-  return await prisma.institution.delete({ where: { id: parseInt(id) } });
+// Delete an artist by ID
+export const deleteArtist = async (id: string) => {
+  return await prisma.artists.delete({
+    where: { id: Number(id) }, // Convert id to number
+  });
 };

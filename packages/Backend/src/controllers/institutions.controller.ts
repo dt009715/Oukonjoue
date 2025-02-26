@@ -3,9 +3,9 @@ import {
   createInstitution,
   deleteInstitution,
   getAllInstitutions,
+  getInstitution,
   getInstitutionByCategory,
-  getInstitutionById,
-} from "../models/insitution.model";
+} from "../models/institution.model";
 
 export const getInstitutions = async (
   req: Request,
@@ -16,33 +16,40 @@ export const getInstitutions = async (
     res.json(institutions);
   } catch (error) {
     console.error("Erreur serveur:", error);
-    res
-      .status(500)
-      .json({
-        message: "Erreur lors de la récupération des institutions",
-        error: error.message,
-      });
+
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "Une erreur inconnue s'est produite";
+    res.status(500).json({
+      message: "Erreur lors de la récupération des institutions",
+      error: errorMessage,
+    });
   }
 };
 
-export const getInstitution = async (
+export const getInstitutionById = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const institution = await getInstitutionById(req.params.id);
+    const institution = await getInstitution(req.params.id);
     if (!institution) {
-      return res.status(404).json({ message: "Institution non trouvée" });
+      res.status(404).json({ message: "Institution non trouvée" });
+      return;
     }
     res.json(institution);
   } catch (error) {
     console.error("Erreur serveur:", error);
-    res
-      .status(500)
-      .json({
-        message: "Erreur lors de la récupération de l'institution",
-        error: error.message,
-      });
+
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "Une erreur inconnue s'est produite";
+    res.status(500).json({
+      message: "Erreur lors de la récupération de l'institution",
+      error: errorMessage,
+    });
   }
 };
 
@@ -53,17 +60,21 @@ export const getInstitutionCate = async (
   try {
     const institution = await getInstitutionByCategory(req.params.category);
     if (!institution) {
-      return res.status(404).json({ message: "Institution non trouvée" });
+      res.status(404).json({ message: "Institution non trouvée" });
+      return;
     }
     res.json(institution);
   } catch (error) {
     console.error("Erreur serveur:", error);
-    res
-      .status(500)
-      .json({
-        message: "Erreur lors de la récupération de l'institution",
-        error: error.message,
-      });
+
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "Une erreur inconnue s'est produite";
+    res.status(500).json({
+      message: "Erreur lors de la récupération de l'institution",
+      error: errorMessage,
+    });
   }
 };
 
@@ -76,12 +87,15 @@ export const createNewInstitution = async (
     res.status(201).json(institution);
   } catch (error) {
     console.error("Erreur de création:", error);
-    res
-      .status(400)
-      .json({
-        message: "Erreur de création de l'institution",
-        error: error.message,
-      });
+
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "Une erreur inconnue s'est produite";
+    res.status(400).json({
+      message: "Erreur de création de l'institution",
+      error: errorMessage,
+    });
   }
 };
 
@@ -94,11 +108,14 @@ export const deleteOneInstitution = async (
     res.json({ message: "Institution supprimée avec succès" });
   } catch (error) {
     console.error("Erreur serveur:", error);
-    res
-      .status(500)
-      .json({
-        message: "Erreur lors de la suppression de l'institution",
-        error: error.message,
-      });
+
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "Une erreur inconnue s'est produite";
+    res.status(500).json({
+      message: "Erreur lors de la suppression de l'institution",
+      error: errorMessage,
+    });
   }
 };

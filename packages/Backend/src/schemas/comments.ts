@@ -1,7 +1,7 @@
 import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
-import { users } from "./";
+import { users } from ".";
 
-export const comments = pgTable("comments", {
+export const comment = pgTable("comments", {
   id: uuid("id").defaultRandom().primaryKey(),
   commentId: uuid("comment_id")
     .references(() => comments.id, { onDelete: "cascade" })

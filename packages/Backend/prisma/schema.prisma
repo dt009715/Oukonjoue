@@ -11,5 +11,18 @@ model Institution {
   id      Int     @id @default(autoincrement())
   name    String
   address String
+  phone String
+  mail String @unique
+  category String
+  createdAt DateTime @default(now())
+}
+
+model Artists {
+  id      Int     @id @default(autoincrement())
+  name    String
+  address String
+  phone String
+  mail String @unique
+  category String
   createdAt DateTime @default(now())
 }

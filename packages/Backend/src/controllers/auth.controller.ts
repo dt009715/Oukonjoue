@@ -1,22 +1,25 @@
+import dotenv from "dotenv";
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { z } from "zod";
 
-import { env } from "../config/env";
-
 import { APIResponse, logger } from "../utils";
 import { userValidation } from "../validation/users.validation";
 
-const { NODE_ENV, JWT_SECRET } = env;
+dotenv.config();
+
+const { NODE_ENV, JWT_SECRET } = process.env;
+
+if (!JWT_SECRET) {
+  throw new Error("JWT_SECRET n'est pas défini. Vérifie ton fichier .env !");
+}
 
 export const register = async (request: Request, response: Response) => {
   try {
-    // Validation des données entrantes avec Zod
     const { email, password, username } = userValidation.parse(request.body);
 
     return APIResponse(response, null, "Vous êtes inscrit", 200);
   } catch (err: any) {
-    // Si l'erreur est lancée par Zod, on informe le client des champs invalides
     if (err instanceof z.ZodError) {
       return APIResponse(
         response,
@@ -36,15 +39,12 @@ export const login = async (request: Request, response: Response) => {
   try {
     const { email, password } = request.body;
 
-    // ... on insérera ici la logique d'authentification pour vérifier les informations de l'utilisateur
-    // ce qui est en dessous: on considére que l'authentification est successful
-
     const accessToken = jwt.sign({ id: 12 }, JWT_SECRET, { expiresIn: "1h" });
 
     response.cookie("accessToken", accessToken, {
-      httpOnly: true, // Empeche l'accès au cookie via JS
-      sameSite: "strict", // Protection contre les attaques CSRF
-      secure: NODE_ENV === "production", // On envoit le cookie uniquement via HTTPS
+      httpOnly: true,
+      sameSite: "strict",
+      secure: NODE_ENV === "production",
     });
 
     APIResponse(response, null, "Vous êtes connecté", 200);

@@ -20,12 +20,10 @@ app.use(
   })
 );
 
-// Utilisation du middleware express.json() pour analyser les requêtes JSON
-app.use(express.json()); // le payload (le body) de la req sera accessible dans toutes mes routes depuis req.body
-app.use(express.urlencoded({ extended: true })); // lire le body lorsque le payload sera de type form-data-urlencoded (formulaire)
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// J'utilise le router défini dans routes/index.routes.ts pour gérer les routes de mon application de façon globale
-app.use(routes);
+app.use("/", routes);
 
 app.listen(PORT, () => {
   console.log(`Serveur lancé sur http://localhost:${PORT}`);

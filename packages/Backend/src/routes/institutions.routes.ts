@@ -1,8 +1,8 @@
 import { Router } from "express";
 import {
-  createIntitution,
-  deleteInstitution,
-  getInstitution,
+  createNewInstitution,
+  deleteOneInstitution,
+  getInstitutionById,
   getInstitutions,
 } from "../controllers/institutions.controller";
 
@@ -12,12 +12,12 @@ const router = Router();
 router.get("/", getInstitutions);
 
 // [GET] http://localhost:3000/institutions/:id
-router.get("/:id", getInstitution);
+router.get("/:id", getInstitutionById);
 
-// [POST] http///localhost:3000/createinst/:id
-router.post("/createinst", createIntitution);
+// [POST] http://localhost:3000/institutions/createinst
+router.post("/createinst", createNewInstitution);
 
-// [DELETE] http://localhost:3000/deleteinst/:id
-router.delete("/deleteinst", deleteInstitution);
+// [DELETE] http://localhost:3000/institutions/deleteinst/:id
+router.delete("/deleteinst/:id", deleteOneInstitution);
 
 export default router;
