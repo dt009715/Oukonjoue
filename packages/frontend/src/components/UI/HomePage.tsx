@@ -4,7 +4,7 @@ import HomePageElement from "../organisms/HomePageElement";
 
 const Home = () => {
   return (
-    <div className="w-full h-full bg-background">
+    <div className="w-full h-full bg-background ">
       <Header />
       <HomePageElement />
       <Footer />

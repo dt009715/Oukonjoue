@@ -1,7 +1,7 @@
 import Cards from "../molecules/Cards";
 
 const cardData = {
-  title: "La rodia",
+  title: "La Rodia",
   phone: "0782676596",
   address: "13 rue des fluttes agasses",
   mail: "test@test.fr",
@@ -13,7 +13,7 @@ const cardData = {
 const HomePageElement = () => {
   return (
     <div>
-      <div className=" pt-10 px-8 ">
+      <div className=" pt-10 px-8">
         <h1 className="font-semibold pb-6 text-2xl">Objectif du site</h1>
         <p className="text-justify text-sm">
           Lorem Ipsum is simply dummy text of the printing and typesetting
@@ -54,7 +54,7 @@ const HomePageElement = () => {
       </div>
       <div className="pt-8 px-8">
         <h1 className="font-semibold pb-6 text-2xl">Les Institutions</h1>
-        <div className="flex justify-center gap-10">
+        <div className="flex sm:flex-col justify-center gap-10">
           {[...Array(3)].map((_, index) => (
             <Cards key={index} {...cardData} />
           ))}
@@ -62,7 +62,7 @@ const HomePageElement = () => {
       </div>
       <div className="pt-8 px-8">
         <h1 className="font-semibold pb-6 text-2xl">Les Artistes</h1>
-        <div className="flex justify-center gap-10">
+        <div className="flex justify-center sm:flex-col gap-10">
           {[...Array(3)].map((_, index) => (
             <Cards key={index} {...cardData} />
           ))}
