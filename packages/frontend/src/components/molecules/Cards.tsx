@@ -31,7 +31,7 @@ const Cards = ({
         <strong>Adresse :</strong> {address}
       </p>
       <p className="py-2">
-        <strong>Adresse :</strong> {mail}
+        <strong>Mail :</strong> {mail}
       </p>
       <p className="py-2">
         <strong>Genre musical préféré :</strong> {genre}
