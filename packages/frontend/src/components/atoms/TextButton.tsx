@@ -1,14 +1,14 @@
 interface TextButtonProps {
   children: React.ReactNode;
-  href: string;
+  onClick: () => void;
 }
 
-const TextButton = ({ children, href }: TextButtonProps) => {
+const TextButton = ({ children, onClick }: TextButtonProps) => {
   return (
     <div>
-      <a href={href} className="font-semibold text-xl">
+      <button onClick={onClick} className="font-semibold text-xl">
         {children}
-      </a>
+      </button>
     </div>
   );
 };

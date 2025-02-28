@@ -36,7 +36,7 @@ const Cards = ({
         {description}
       </p>
       <div className="flex justify-center">
-        <TextButton href=""> En Savoir Plus</TextButton>
+        <TextButton onClick={() => {}}> En Savoir Plus</TextButton>
       </div>
     </div>
   );

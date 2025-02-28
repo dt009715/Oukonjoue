@@ -4,10 +4,10 @@ const Footer = () => {
   return (
     <div className="w-full flex py-8">
       <div className="w-1/2 flex items-center justify-center">
-        <TextButton children="Politique des cookies" href="" />
+        <TextButton children="Politique des cookies" onClick={() => {}} />
       </div>
       <div className="w-1/2 flex items-center justify-center">
-        <TextButton children="Mentions légales" href="" />
+        <TextButton children="Mentions légales" onClick={() => {}} />
       </div>
     </div>
   );
