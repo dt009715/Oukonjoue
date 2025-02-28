@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev:backend": " cd packages/backend && npm run dev",
-    "dev:frontend": "pnpm --filter frontend dev",
+    "dev:frontend": "cd packages/frontend && npm run dev",
     "dev": "concurrently \"pnpm dev:frontend\" \"pnpm dev:backend\""
   },
   "workspaces": [
