@@ -36,7 +36,7 @@ const InstitutionsElement = () => {
   ];
   return (
     <div>
-      <div className="relative flex w-full pt-10 items-center justify-between pb-6">
+      <div className="relative flex w-full pt-10 items-center justify-between pb-8">
         <h1 className="font-semibold text-3xl absolute left-1/2 transform -translate-x-1/2">
           Institutions
         </h1>
@@ -45,7 +45,7 @@ const InstitutionsElement = () => {
           <FilterButton onClick={() => {}} />
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 px-4">
+      <div className="flex justify-center  gap-10 ">
         {cardDataList.map((cardData, index) => (
           <Cards key={index} {...cardData} />
         ))}

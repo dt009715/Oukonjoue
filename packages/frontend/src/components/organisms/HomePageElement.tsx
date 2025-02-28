@@ -53,7 +53,7 @@ const HomePageElement = () => {
       </div>
       <div className="pt-8 px-8">
         <h1 className="font-semibold pb-6 text-2xl">Les Institutions</h1>
-        <div className="flex gap-10">
+        <div className="flex justify-center gap-10">
           {[...Array(3)].map((_, index) => (
             <Cards key={index} {...cardData} />
           ))}
@@ -61,7 +61,7 @@ const HomePageElement = () => {
       </div>
       <div className="pt-8 px-8">
         <h1 className="font-semibold pb-6 text-2xl">Les Artistes</h1>
-        <div className="flex gap-10">
+        <div className="flex justify-center gap-10">
           {[...Array(3)].map((_, index) => (
             <Cards key={index} {...cardData} />
           ))}

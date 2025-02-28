@@ -5,7 +5,7 @@ interface FilterButtonProps {
 const FilterButton = ({ onClick }: FilterButtonProps) => {
   return (
     <button
-      className="bg-cardGrey font-semibold rounded-lg px-2 "
+      className="bg-cardGrey font-semibold rounded-lg px-3 justify-center py-1 "
       onClick={onClick}
     >
       Filtres

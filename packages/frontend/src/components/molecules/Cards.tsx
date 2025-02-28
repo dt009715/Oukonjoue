@@ -1,3 +1,5 @@
+import TextButton from "../atoms/TextButton";
+
 interface InfoCardProps {
   title: string;
   phone?: string;
@@ -18,32 +20,29 @@ const Cards = ({
   mail,
 }: InfoCardProps) => {
   return (
-    <div className="bg-background   rounded-2xl shadow-lg shadow-gray-300 p-6 w-full max-w-sm transition-all hover:shadow-xl">
-      <img
-        src="/images/imageRodia.png"
-        alt={title}
-        className="w-full h-48 object-cover rounded-xl mb-4"
-      />
-      <h2 className="font-bold text-lg text-gray-800">{title}</h2>
-      <p className="text-gray-600">
-        <strong>Téléphone :</strong> {phone}
+    <div className=" p-4 rounded-lg shadow-md w-full max-w-md">
+      <img src="/images/imageRodia.png" alt="test"></img>
+      <h2 className="font-bold text-lg pt-8">{title}</h2>
+      <p className="py-2">
+        <strong>Téléphone :</strong>
+        {phone}
       </p>
-      <p className="text-gray-600">
-        <strong>Mail :</strong> {mail}
-      </p>
-      <p className="text-gray-600">
+      <p className="py-2">
         <strong>Adresse :</strong> {address}
       </p>
-      <p className="text-gray-600">
-        <strong>Genre :</strong> {genre}
+      <p className="py-2">
+        <strong>Adresse :</strong> {mail}
       </p>
-      <p className="text-gray-500 mt-2">{description}</p>
-      <a
-        href={link}
-        className="mt-4 block text-center px-2 py-2 text-gray-600 rounded-lg shadow-md "
-      >
-        En Savoir Plus
-      </a>
+      <p className="py-2">
+        <strong>Genre musical préféré :</strong> {genre}
+      </p>
+      <p className="text-justify text-gray-600 pt-2 pb-3">
+        <strong>Description :</strong>
+        {description}
+      </p>
+      <div className="mt-4 block text-center px-4 py-2 text-gray-600 rounded-lg shadow-[4px_4px_8px_#babecc,-4px_-4px_8px_#ffffff] hover:bg-gray-200">
+        <TextButton onClick={() => {}}> En Savoir Plus</TextButton>
+      </div>
     </div>
   );
 };
