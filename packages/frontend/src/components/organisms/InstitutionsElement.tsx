@@ -2,15 +2,38 @@ import FilterButton from "../atoms/FilterButton";
 import Cards from "../molecules/Cards";
 
 const InstitutionsElement = () => {
-  const cardData = {
-    name: "La rodia",
-    phone: "0782676596",
-    address: "13 rue des fluttes agasses",
-    genre: "black metal",
-    description:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only",
-    link: "",
-  };
+  const cardDataList = [
+    {
+      image: "image1.jpg",
+      title: "La Rodia",
+      phone: "03 81 87 86 00",
+      mail: "blabla@test.fr",
+      address: "4 Av. de Chardonnet, 25000 Besançon",
+      genre: "Tout genre",
+      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
+      link: "",
+    },
+    {
+      image: "image2.jpg",
+      title: "La Rodia",
+      phone: "03 81 87 86 00",
+      mail: "blabla@test.fr",
+      address: "4 Av. de Chardonnet, 25000 Besançon",
+      genre: "Tout genre",
+      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
+      link: "",
+    },
+    {
+      image: "image3.jpg",
+      title: "La Rodia",
+      phone: "03 81 87 86 00",
+      mail: "blabla@test.fr",
+      address: "4 Av. de Chardonnet, 25000 Besançon",
+      genre: "Tout genre",
+      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
+      link: "",
+    },
+  ];
   return (
     <div>
       <div className="relative flex w-full pt-10 items-center justify-between pb-6">
@@ -22,8 +45,8 @@ const InstitutionsElement = () => {
           <FilterButton onClick={() => {}} />
         </div>
       </div>
-      <div className="flex gap-10">
-        {[...Array(3)].map((_, index) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 px-4">
+        {cardDataList.map((cardData, index) => (
           <Cards key={index} {...cardData} />
         ))}
       </div>

@@ -1,7 +1,7 @@
 import Cards from "../molecules/Cards";
 
 const cardData = {
-  name: "La rodia",
+  title: "La rodia",
   phone: "0782676596",
   address: "13 rue des fluttes agasses",
   genre: "black metal",
