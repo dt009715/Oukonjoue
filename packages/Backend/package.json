@@ -5,18 +5,28 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "ts-node src/backend.ts"
+    "dev": "ts-node src/backend.ts",
+    "seed": "node prisma/seed.js"
+  },
+  "prisma": {
+    "schema": "prisma/schema.prisma"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^6.4.1",
     "@vercel/postgres": "^0.10.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
     "drizzle-orm": "^0.39.3",
     "express": "^4.21.2",
-    "pg": "^8.13.3"
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.13.3",
+    "prisma": "^6.4.1",
+    "winston": "^3.17.0",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.9",

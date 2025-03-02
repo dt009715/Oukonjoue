@@ -7,22 +7,43 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Institution {
-  id      Int     @id @default(autoincrement())
-  name    String
-  address String
-  phone String
-  mail String @unique
-  category String
+model institutions {
+  id        Int      @id @default(autoincrement())
+  city String
+  name      String
+  address   String?
+  phone     String?
+  mail      String? 
+  category  String?
+  createdAt DateTime @default(now())
+
+  @@map("institutions")
+}
+
+model artists {
+  id        Int      @id @default(autoincrement())
+  name      String
+  address   String?
+  phone     String?
+  mail      String ?  
+  category  String?
   createdAt DateTime @default(now())
 }
 
-model Artists {
-  id      Int     @id @default(autoincrement())
-  name    String
-  address String
-  phone String
-  mail String @unique
-  category String
-  createdAt DateTime @default(now())
+model comments {
+  id            Int      @id @default(autoincrement())
+  content       String
+  author        String
+  creation_date DateTime @default(now())
+}
+
+model department {
+  id     Int    @id @default(autoincrement())
+  name   String
+  number String
+}
+
+model category {
+  id   Int    @id @default(autoincrement())
+  name String
 }

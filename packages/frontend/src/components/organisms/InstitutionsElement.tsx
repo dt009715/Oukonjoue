@@ -1,39 +1,58 @@
+import React, { useEffect, useState } from "react";
+import { getInstitutions } from "../../utils/api";
 import FilterButton from "../atoms/FilterButton";
 import Cards from "../molecules/Cards";
 
-const InstitutionsElement = () => {
-  const cardDataList = [
-    {
-      image: "image1.jpg",
-      title: "La Rodia",
-      phone: "03 81 87 86 00",
-      mail: "blabla@test.fr",
-      address: "4 Av. de Chardonnet, 25000 Besançon",
-      genre: "Tout genre",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
-      link: "",
-    },
-    {
-      image: "image2.jpg",
-      title: "La Rodia",
-      phone: "03 81 87 86 00",
-      mail: "blabla@test.fr",
-      address: "4 Av. de Chardonnet, 25000 Besançon",
-      genre: "Tout genre",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
-      link: "",
-    },
-    {
-      image: "image3.jpg",
-      title: "La Rodia",
-      phone: "03 81 87 86 00",
-      mail: "blabla@test.fr",
-      address: "4 Av. de Chardonnet, 25000 Besançon",
-      genre: "Tout genre",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
-      link: "",
-    },
-  ];
+interface Institution {
+  image: string;
+  title: string;
+  phone: string;
+  mail: string;
+  address: string;
+  genre: string;
+  description: string;
+  link: string;
+}
+
+const CardList: React.FC = () => {
+  const [cardDataList, setCardDataList] = useState<Institution[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getInstitutions();
+
+        if (!Array.isArray(data)) {
+          throw new Error("Les données récupérées ne sont pas un tableau !");
+        }
+
+        const formattedData: Institution[] = data.map((institution) => ({
+          image: institution.image || "",
+          title: institution.name || "Nom inconnu",
+          phone: institution.phone || "Non disponible",
+          mail: institution.mail || "Non disponible",
+          address: institution.address || "Adresse inconnue",
+          genre: institution.genre || "Genre inconnu",
+          description: institution.description || "Aucune description",
+          link: institution.link || "#",
+        }));
+
+        setCardDataList(formattedData);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Erreur inconnue");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) return <p>Chargement...</p>;
+  if (error) return <p>Erreur : {error}</p>;
+
   return (
     <div>
       <div className="relative flex w-full pt-10 items-center justify-between pb-8">
@@ -45,7 +64,7 @@ const InstitutionsElement = () => {
           <FilterButton onClick={() => {}} />
         </div>
       </div>
-      <div className="flex justify-center  gap-10 ">
+      <div className="grid grid-cols-1 pl-8 grid-cols-2 grid-cols-3 gap-6 p-4">
         {cardDataList.map((cardData, index) => (
           <Cards key={index} {...cardData} />
         ))}
@@ -54,4 +73,4 @@ const InstitutionsElement = () => {
   );
 };
 
-export default InstitutionsElement;
+export default CardList;

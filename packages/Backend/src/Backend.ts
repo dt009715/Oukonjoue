@@ -1,16 +1,16 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import dotenv from "dotenv";
 import express from "express";
 
 import routes from "./routes/index.routes";
 
-dotenv.config();
+require("dotenv").config();
 
 const app = express();
 const { PORT, FRONTEND_URL } = process.env;
 
 app.use(cookieParser());
+console.log("FRONTEND_URL utilisé pour CORS :", FRONTEND_URL);
 
 app.use(
   cors({

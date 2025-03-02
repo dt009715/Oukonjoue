@@ -4,7 +4,7 @@ import Header from "../organisms/Header";
 
 const ArtistsPage = () => {
   return (
-    <div className="bg-background">
+    <div className="bg-background h-full">
       <Header />
       <ArtistsPageElement />
       <Footer />

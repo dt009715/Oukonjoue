@@ -19,7 +19,7 @@ export const sendEmail = async (req: Request, res: Response) => {
     // mail options
     const mailOptions = {
       from: email, // sending by
-      to: "destinataire@example.com", // received by !!!!!!!!!!!!! changer la valeur du mail
+      to: "oukonjoue@gmail.com ",
       subject: `Nouveau message de ${name}`,
       text: message,
     };
