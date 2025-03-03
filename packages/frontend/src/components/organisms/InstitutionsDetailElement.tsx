@@ -1,56 +1,29 @@
 import { useEffect, useState } from "react";
 
-const API_URL = "http://localhost:3000/artistes";
-
-interface Artist {
-  id: number;
-  name: string;
-  genre: string;
-  phone: string;
-  address: string;
-  mail: string;
-  description: string;
-  image: string;
-}
+const API_URL = "http://localhost:3001/api/comments";
 
 interface Comment {
   id: number;
   content: string;
 }
 
-const ArtistDetailElement = ({ artistId }: { artistId: number }) => {
-  const [artist, setArtist] = useState<Artist | null>(null);
+const InstitutionsDetailElement = ({ artistId }: { artistId: number }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
 
   useEffect(() => {
     if (artistId) {
-      fetchArtistDetails();
       fetchComments();
     }
   }, [artistId]);
 
-  const fetchArtistDetails = async () => {
-    try {
-      const response = await fetch(`${API_URL}/artist/${artistId}`);
-      if (!response.ok) {
-        throw new Error(`Erreur HTTP: ${response.status}`);
-      }
-      const data = await response.json();
-      console.log("Données de l'artiste:", data);
-      setArtist(data);
-    } catch (error) {
-      console.error("Erreur dans fetchArtistDetails:", error);
-    }
-  };
-
   const fetchComments = async () => {
     try {
-      const response = await fetch(`${API_URL}/comments/${artistId}`);
+      const response = await fetch(`${API_URL}/${artistId}`);
       if (!response.ok)
         throw new Error("Erreur lors du chargement des commentaires.");
       const data = await response.json();
-      setComments(data);
+      setComments(data); //
     } catch (error) {
       console.error("Erreur:", error);
     }
@@ -60,7 +33,7 @@ const ArtistDetailElement = ({ artistId }: { artistId: number }) => {
     if (newComment.trim() === "") return;
 
     try {
-      const response = await fetch(`${API_URL}/comments`, {
+      const response = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ artistId, content: newComment }),
@@ -77,36 +50,34 @@ const ArtistDetailElement = ({ artistId }: { artistId: number }) => {
     }
   };
 
-  if (!artist) {
-    return <p>Chargement des détails de l'artiste...</p>;
-  }
-
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center p-6">
       <div className="w-full max-w-4xl rounded-xl overflow-hidden shadow-lg">
         <img
-          src={artist.image || "/default-image.jpg"}
-          alt={artist.name}
+          src="/band-image.jpg"
+          alt="The Electric Waves"
           className="w-full h-72 object-cover"
         />
       </div>
 
       <div className="bg-white w-full max-w-4xl p-6 rounded-xl shadow-md mt-6">
-        <h1 className="text-3xl font-bold text-gray-900">{artist.name}</h1>
-        <p className="text-gray-600 text-lg">Genre : {artist.genre}</p>
+        <h1 className="text-3xl font-bold text-gray-900">The Electric Waves</h1>
+        <p className="text-gray-600 text-lg">Genre : Rock</p>
         <div className="mt-4 space-y-2">
           <p>
-            <span className="font-semibold">Téléphone :</span> {artist.phone}
+            <span className="font-semibold">Téléphone :</span> +33 6 12 34 56 78
           </p>
           <p>
-            <span className="font-semibold">Adresse :</span> {artist.address}
+            <span className="font-semibold">Adresse :</span> 12 Rue des
+            Concerts, Paris
           </p>
           <p>
-            <span className="font-semibold">Mail :</span> {artist.mail}
+            <span className="font-semibold">Mail :</span>{" "}
+            contact@electricwaves.com
           </p>
           <p>
-            <span className="font-semibold">Description :</span>{" "}
-            {artist.description}
+            <span className="font-semibold">Description :</span> Un groupe de
+            rock innovant avec des sons électrisants.
           </p>
         </div>
       </div>
@@ -144,4 +115,4 @@ const ArtistDetailElement = ({ artistId }: { artistId: number }) => {
   );
 };
 
-export default ArtistDetailElement;
+export default InstitutionsDetailElement;

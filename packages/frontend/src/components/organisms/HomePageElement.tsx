@@ -56,7 +56,12 @@ const HomePageElement = () => {
         <h1 className="font-semibold pb-6 text-2xl">Les Institutions</h1>
         <div className="flex sm:flex-col justify-center gap-10">
           {[...Array(3)].map((_, index) => (
-            <Cards key={index} {...cardData} />
+            <Cards
+              key={index}
+              {...cardData}
+              type="institutions"
+              id={cardData.link}
+            />
           ))}
         </div>
       </div>
@@ -64,7 +69,12 @@ const HomePageElement = () => {
         <h1 className="font-semibold pb-6 text-2xl">Les Artistes</h1>
         <div className="flex justify-center sm:flex-col gap-10">
           {[...Array(3)].map((_, index) => (
-            <Cards key={index} {...cardData} />
+            <Cards
+              key={index}
+              {...cardData}
+              type="artistes"
+              id={cardData.link}
+            />
           ))}
         </div>
       </div>

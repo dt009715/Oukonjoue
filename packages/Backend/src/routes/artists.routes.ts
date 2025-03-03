@@ -11,8 +11,8 @@ const router = Router();
 // [GET] http://localhost:3000/artists
 router.get("/", getArtists);
 
-// [GET] http://localhost:3000/artists/:id
-router.get("/:id", getArtist);
+// [GET] http://localhost:3000/api/artistes/:id
+router.get("/artist/:id", getArtist);
 
 //[POST] http://localhost:3000/createNewArtist/:id
 router.get("/createNewArtist", createNewArtist);

@@ -1,7 +1,7 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
-
+import commentRoutes from "./routes/comments.routes";
 import routes from "./routes/index.routes";
 
 require("dotenv").config();
@@ -23,7 +23,8 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/", routes);
+app.use("/api/comments", commentRoutes);
+app.use("/api", routes);
 
 app.listen(PORT, () => {
   console.log(`Serveur lancé sur http://localhost:${PORT}`);

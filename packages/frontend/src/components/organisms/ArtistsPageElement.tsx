@@ -35,7 +35,7 @@ const ArtistsPageElement = () => {
           address: artist.address || "Adresse inconnue",
           genre: artist.genre || "Genre inconnu",
           description: artist.description || "Aucune description",
-          link: artist.link || "#",
+          link: artist.id.toString(),
         }));
 
         setCardDataList(formattedData);
@@ -62,7 +62,12 @@ const ArtistsPageElement = () => {
         </div>
         <div className="grid pl-8 grid-cols-3 gap-10 justify-center">
           {cardDataList.map((cardData, index) => (
-            <Cards key={index} {...cardData} />
+            <Cards
+              key={index}
+              {...cardData}
+              type="artistes"
+              id={cardData.link}
+            />
           ))}
         </div>
       </div>

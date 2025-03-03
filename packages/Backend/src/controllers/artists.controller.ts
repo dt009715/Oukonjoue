@@ -23,22 +23,19 @@ export const getArtists = async (
     });
   }
 };
-
 export const getArtist = async (req: Request, res: Response): Promise<void> => {
   try {
-    const institution = await getArtistById(req.params.id);
-    if (!institution) {
-      res.status(404).json({ message: "artiste non trouvée" });
+    const artist = await getArtistById(req.params.id);
+    if (!artist) {
+      res.status(404).json({ message: "Artiste non trouvé" });
       return;
     }
-    res.json(institution);
-  } catch (error) {
+
+    console.log("Données envoyées:", artist);
+    res.json(artist);
+  } catch (error: any) {
     console.error("Erreur serveur:", error);
-    const err = error as Error;
-    res.status(500).json({
-      message: "Erreur lors de la récupération de l'artiste",
-      error: err.message,
-    });
+    res.status(500).json({ message: "Erreur serveur", error: error.message });
   }
 };
 

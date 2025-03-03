@@ -66,7 +66,12 @@ const CardList: React.FC = () => {
       </div>
       <div className="grid grid-cols-1 pl-8 grid-cols-2 grid-cols-3 gap-6 p-4">
         {cardDataList.map((cardData, index) => (
-          <Cards key={index} {...cardData} />
+          <Cards
+            key={index}
+            {...cardData}
+            type="institutions"
+            id={cardData.link}
+          />
         ))}
       </div>
     </div>

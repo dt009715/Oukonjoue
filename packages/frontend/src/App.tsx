@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import ArtistDetailsPage from "./components/UI/ArtistDetailsPage";
 import ArtistsPage from "./components/UI/ArtistsPage";
 import Contact from "./components/UI/Contact";
 import Home from "./components/UI/HomePage";
@@ -12,6 +13,8 @@ function App() {
           <Route path="/institutions" element={<Institutions />} />
           <Route path="/artistes" element={<ArtistsPage />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/artistes/:id" element={<ArtistDetailsPage />} />
+          <Route path="/institutions/:id" element={<ArtistDetailsPage />} />
         </Routes>
       </BrowserRouter>
     </div>
