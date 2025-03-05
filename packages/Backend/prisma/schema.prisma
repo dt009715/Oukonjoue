@@ -7,29 +7,54 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model institutions {
+model User {
+  id            Int            @id @default(autoincrement())
+  email         String         @unique
+  password      String
+  role          UserRole       
+  artist        Artists?        @relation(fields: [artistId], references: [id])
+  artistId      Int?            @unique
+  institution   Institutions?   @relation(fields: [institutionId], references: [id])
+  institutionId Int?            @unique
+  createdAt     DateTime       @default(now())
+}
+
+model Artists {
   id        Int      @id @default(autoincrement())
-  city String
   name      String
   address   String?
   phone     String?
-  mail      String? 
+  mail      String?
   category  String?
+  image      String?
+  description String?
   createdAt DateTime @default(now())
 
-  @@map("institutions")
+  // Relation avec User
+  user      User?
 }
 
-model artists {
+model Institutions {
   id        Int      @id @default(autoincrement())
+  city      String
   name      String
   address   String?
   phone     String?
-  mail      String ?  
+  mail      String?
   category  String?
+  image      String?
+  description String?
   createdAt DateTime @default(now())
+
+  // Relation avec User
+  user      User?
 }
 
+// Enum pour différencier les types d'utilisateur
+enum UserRole {
+  ARTISTS
+  INSTITUTIONS
+}
 model comments {
   id            Int      @id @default(autoincrement())
   content       String

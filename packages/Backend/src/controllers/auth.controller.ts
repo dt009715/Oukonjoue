@@ -3,10 +3,12 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { z } from "zod";
 
+import prisma from "../config/database";
+import { registerUser } from "../models/UserModel";
 import { APIResponse, logger } from "../utils";
-import { userValidation } from "../validation/users.validation";
 
 dotenv.config();
+const bcrypt = require("bcrypt");
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -15,10 +17,45 @@ if (!JWT_SECRET) {
 }
 
 export const register = async (request: Request, response: Response) => {
-  try {
-    const { email, password, username } = userValidation.parse(request.body);
+  const validationSchema = z.object({
+    email: z.string().email(),
+    password: z.string().min(6),
+    name: z.string().min(3),
+    image: z.string().optional(),
+    title: z.string().optional(),
+    phone: z.string().optional(),
+    mail: z.string().optional(),
+    address: z.string().optional(),
+    genre: z.string().optional(),
+    description: z.string().optional(),
+    type: z.enum(["ARTISTS", "INSTITUTIONS"]),
+  });
 
-    return APIResponse(response, null, "Vous êtes inscrit", 200);
+  try {
+    const data = validationSchema.parse(request.body);
+
+    const existingUser = await prisma.user.findUnique({
+      where: { email: data.email }, // Recherche un utilisateur avec cet email
+    });
+
+    if (existingUser) {
+      return APIResponse(response, null, "Cet email est déjà utilisé", 400);
+    }
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+
+    const newUser = await registerUser({
+      name: data.name,
+      email: data.email,
+      password: hashedPassword,
+      image: data.image || "default.jpg",
+      phone: data.phone || "Non disponible",
+      mail: data.mail || "Non disponible",
+      address: data.address || "Adresse inconnue",
+      description: data.description || "Aucune description",
+      role: data.type,
+    });
+
+    return APIResponse(response, null, "Vous êtes inscrit avec succès", 200);
   } catch (err: any) {
     if (err instanceof z.ZodError) {
       return APIResponse(
@@ -28,10 +65,11 @@ export const register = async (request: Request, response: Response) => {
         400
       );
     }
+
     logger.error(
       `Erreur lors de l'inscription de l'utilisateur: ${err.message}`
     );
-    APIResponse(response, null, "Erreur serveur", 500);
+    return APIResponse(response, null, "Erreur serveur", 500);
   }
 };
 
@@ -39,7 +77,21 @@ export const login = async (request: Request, response: Response) => {
   try {
     const { email, password } = request.body;
 
-    const accessToken = jwt.sign({ id: 12 }, JWT_SECRET, { expiresIn: "1h" });
+    const user = await prisma.user.findUnique({
+      where: { email: email },
+    });
+
+    if (!user) {
+      return APIResponse(response, null, "Utilisateur non trouvé", 404);
+    }
+    const passwordIsValid = await bcrypt.compare(password, user.password);
+    if (!passwordIsValid) {
+      return APIResponse(response, null, "Mot de passe incorrect", 400);
+    }
+
+    const accessToken = jwt.sign({ id: user.id }, JWT_SECRET, {
+      expiresIn: "1h",
+    });
 
     response.cookie("accessToken", accessToken, {
       httpOnly: true,

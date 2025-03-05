@@ -5,12 +5,14 @@ import Contact from "./components/UI/Contact";
 import Home from "./components/UI/HomePage";
 import InstitutionDetailsPage from "./components/UI/InstitutionDetailsPage";
 import Institutions from "./components/UI/InstitutionsPage";
+import RegisterPage from "./components/UI/RegisterPage";
 function App() {
   return (
     <div className="w-full h-full">
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/register" element={<RegisterPage />} />
           <Route path="/institutions" element={<Institutions />} />
           <Route path="/artistes" element={<ArtistsPage />} />
           <Route path="/contact" element={<Contact />} />

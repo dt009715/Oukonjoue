@@ -21,7 +21,7 @@ const Header = () => {
       </div>
       <div className="flex justify-end pr-8 gap-8 w-1/3">
         <Button onClick={() => {}}> Se connecter</Button>
-        <Button onClick={() => {}}> S'inscrire</Button>
+        <Button onClick={() => navigate("/register")}> S'inscrire</Button>
       </div>
     </div>
   );
