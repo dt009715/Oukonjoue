@@ -5,6 +5,7 @@ import Header from "../organisms/Header";
 
 const ArtistDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
+
   return (
     <div>
       <div className="bg-background h-full">

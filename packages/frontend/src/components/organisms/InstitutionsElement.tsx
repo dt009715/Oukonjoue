@@ -14,7 +14,7 @@ interface Institution {
   link: string;
 }
 
-const CardList: React.FC = () => {
+const InstitutionElement: React.FC = () => {
   const [cardDataList, setCardDataList] = useState<Institution[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -36,7 +36,7 @@ const CardList: React.FC = () => {
           address: institution.address || "Adresse inconnue",
           genre: institution.genre || "Genre inconnu",
           description: institution.description || "Aucune description",
-          link: institution.link || "#",
+          link: institution.id.toString() || "#",
         }));
 
         setCardDataList(formattedData);
@@ -78,4 +78,4 @@ const CardList: React.FC = () => {
   );
 };
 
-export default CardList;
+export default InstitutionElement;

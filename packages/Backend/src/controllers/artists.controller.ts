@@ -12,8 +12,8 @@ export const getArtists = async (
   res: Response
 ): Promise<void> => {
   try {
-    const institutions = await getAllArtists();
-    res.json(institutions);
+    const artist = await getAllArtists();
+    res.json(artist);
   } catch (error) {
     console.error("Erreur serveur:", error);
     const err = error as Error;
@@ -23,19 +23,27 @@ export const getArtists = async (
     });
   }
 };
+
 export const getArtist = async (req: Request, res: Response): Promise<void> => {
   try {
-    const artist = await getArtistById(req.params.id);
+    const artistId = req.params.id;
+    console.log(`🎯 Recherche de l'artiste avec l'ID: ${artistId}`);
+
+    const artist = await getArtistById(artistId);
+
     if (!artist) {
       res.status(404).json({ message: "Artiste non trouvé" });
       return;
     }
 
-    console.log("Données envoyées:", artist);
     res.json(artist);
-  } catch (error: any) {
-    console.error("Erreur serveur:", error);
-    res.status(500).json({ message: "Erreur serveur", error: error.message });
+  } catch (error) {
+    console.error("❌ Erreur serveur:", error);
+    const err = error as Error;
+    res.status(500).json({
+      message: "Erreur lors de la récupération de l'artiste",
+      error: err.message,
+    });
   }
 };
 
@@ -44,12 +52,12 @@ export const getArtistsCate = async (
   res: Response
 ): Promise<void> => {
   try {
-    const institution = await getArtistsByCategory(req.params.category);
-    if (!institution) {
+    const artist = await getArtistsByCategory(req.params.category);
+    if (!artist) {
       res.status(404).json({ message: "artiste non trouvée" });
       return;
     }
-    res.json(institution);
+    res.json(artist);
   } catch (error) {
     console.error("Erreur serveur:", error);
     const err = error as Error;
@@ -66,8 +74,8 @@ export const createNewArtist = async (
   res: Response
 ): Promise<void> => {
   try {
-    const institution = await createArtist(req.body);
-    res.status(201).json(institution);
+    const artist = await createArtist(req.body);
+    res.status(201).json(artist);
   } catch (error) {
     console.error("Erreur de création:", error);
     const err = error as Error;

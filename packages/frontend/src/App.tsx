@@ -3,6 +3,7 @@ import ArtistDetailsPage from "./components/UI/ArtistDetailsPage";
 import ArtistsPage from "./components/UI/ArtistsPage";
 import Contact from "./components/UI/Contact";
 import Home from "./components/UI/HomePage";
+import InstitutionDetailsPage from "./components/UI/InstitutionDetailsPage";
 import Institutions from "./components/UI/InstitutionsPage";
 function App() {
   return (
@@ -14,7 +15,10 @@ function App() {
           <Route path="/artistes" element={<ArtistsPage />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/artistes/:id" element={<ArtistDetailsPage />} />
-          <Route path="/institutions/:id" element={<ArtistDetailsPage />} />
+          <Route
+            path="/institutions/:id"
+            element={<InstitutionDetailsPage />}
+          />
         </Routes>
       </BrowserRouter>
     </div>

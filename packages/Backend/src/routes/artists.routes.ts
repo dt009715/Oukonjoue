@@ -7,17 +7,18 @@ import {
 } from "../controllers/artists.controller";
 
 const router = Router();
+console.log("🚀 Routes artistes chargées !");
 
 // [GET] http://localhost:3000/artists
 router.get("/", getArtists);
 
 // [GET] http://localhost:3000/api/artistes/:id
-router.get("/artist/:id", getArtist);
+router.get("/:id", getArtist);
 
 //[POST] http://localhost:3000/createNewArtist/:id
-router.get("/createNewArtist", createNewArtist);
+router.post("/createNewArtist", createNewArtist);
 
 //[DELETE] http://loclahost:3000/deleteArtist/:id
-router.get("/createArtist", deleteOneArtist);
+router.delete("/createArtist", deleteOneArtist);
 
 export default router;

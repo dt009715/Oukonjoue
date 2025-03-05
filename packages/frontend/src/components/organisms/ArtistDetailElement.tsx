@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const API_URL = "http://localhost:3000/artistes";
+const API_URL = "http://localhost:3001/artistes";
 
 interface Artist {
   id: number;
@@ -25,6 +25,7 @@ const ArtistDetailElement = ({ artistId }: { artistId: number }) => {
 
   useEffect(() => {
     if (artistId) {
+      console.log("🆔 ID de l'artiste reçu:", artistId);
       fetchArtistDetails();
       fetchComments();
     }
@@ -32,15 +33,25 @@ const ArtistDetailElement = ({ artistId }: { artistId: number }) => {
 
   const fetchArtistDetails = async () => {
     try {
-      const response = await fetch(`${API_URL}/artist/${artistId}`);
+      console.log(
+        `🔍 Récupération des détails de l'artiste depuis ${API_URL}/${artistId}`
+      );
+
+      const response = await fetch(`${API_URL}/${artistId}`);
+
       if (!response.ok) {
         throw new Error(`Erreur HTTP: ${response.status}`);
       }
+
+      console.log("✅ Réponse reçue:", response);
+      console.log("📄 Content-Type:", response.headers.get("content-type"));
+
       const data = await response.json();
-      console.log("Données de l'artiste:", data);
+      console.log("🎨 Données de l'artiste:", data);
+
       setArtist(data);
     } catch (error) {
-      console.error("Erreur dans fetchArtistDetails:", error);
+      console.error("❌ Erreur dans fetchArtistDetails:", error);
     }
   };
 
@@ -82,7 +93,7 @@ const ArtistDetailElement = ({ artistId }: { artistId: number }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center p-6">
+    <div className="min-h-screen bg-background flex flex-col items-center p-6">
       <div className="w-full max-w-4xl rounded-xl overflow-hidden shadow-lg">
         <img
           src={artist.image || "/default-image.jpg"}
