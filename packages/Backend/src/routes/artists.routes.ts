@@ -1,6 +1,5 @@
 import { Router } from "express";
 import {
-  createNewArtist,
   deleteOneArtist,
   getArtist,
   getArtists,
@@ -14,9 +13,6 @@ router.get("/", getArtists);
 
 // [GET] http://localhost:3000/api/artistes/:id
 router.get("/:id", getArtist);
-
-//[POST] http://localhost:3000/createNewArtist/:id
-router.post("/createNewArtist", createNewArtist);
 
 //[DELETE] http://loclahost:3000/deleteArtist/:id
 router.delete("/createArtist", deleteOneArtist);

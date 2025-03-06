@@ -39,18 +39,6 @@ const Cards = ({
       <p className="py-2">
         <strong className="pr-2">Adresse :</strong> {address}
       </p>
-      <p className="py-2">
-        <strong className="pr-2">Mail :</strong> {mail}
-      </p>
-      {genre && (
-        <p className="py-2">
-          <strong className="pr-2">Genre musical :</strong> {genre}
-        </p>
-      )}
-      <p className="text-justify text-gray-600 pt-2 pb-3">
-        <strong className="pr-2">Description :</strong>
-        {description}
-      </p>
       <div className="mt-4 block text-center px-4 py-2 text-gray-600 bg-gray-200 rounded-lg shadow-md hover:bg-gray-300 ">
         <TextButton onClick={handleClick}> En Savoir Plus</TextButton>
       </div>

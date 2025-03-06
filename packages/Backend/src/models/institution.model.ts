@@ -27,6 +27,7 @@ export const createInstitution = async (data: {
   phone: string;
   mail: string;
   category: string;
+  description: string;
 }) => {
   return await prisma.institutions.create({ data });
 };
