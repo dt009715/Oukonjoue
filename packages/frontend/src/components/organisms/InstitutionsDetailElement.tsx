@@ -47,15 +47,15 @@ const InstitutionDetailElement = ({
         throw new Error(`Erreur HTTP: ${response.status}`);
       }
 
-      console.log("✅ Réponse reçue:", response);
-      console.log("📄 Content-Type:", response.headers.get("content-type"));
+      console.log("Réponse reçue:", response);
+      console.log(" Content-Type:", response.headers.get("content-type"));
 
       const data = await response.json();
-      console.log("🎨 Données de l'artiste:", data);
+      console.log(" Données de l'artiste:", data);
 
       setInstitution(data);
     } catch (error) {
-      console.error("❌ Erreur dans fetchArtistDetails:", error);
+      console.error(" Erreur dans fetchArtistDetails:", error);
     }
   };
 

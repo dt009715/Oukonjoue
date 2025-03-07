@@ -251,10 +251,9 @@ const RegisterForm = () => {
             className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           />
         </div>
-
         <div className="mb-4">
           <label
-            htmlFor="genre"
+            htmlFor="description"
             className="block text-sm font-medium text-gray-700"
           >
             Genre :
@@ -263,7 +262,11 @@ const RegisterForm = () => {
             type="text"
             id="genre"
             name="genre"
-            placeholder="Entrez le type d'institution"
+            placeholder={
+              type === "ARTISTS"
+                ? "Entrez votre/vos genres musicaux"
+                : "Entrez le type d'institution"
+            }
             value={formData.genre}
             onChange={handleChange}
             className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"

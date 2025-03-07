@@ -4,7 +4,7 @@ import FilterButton from "../atoms/FilterButton";
 import Cards from "../molecules/Cards";
 interface Artists {
   image: string;
-  title: string;
+  name: string;
   phone: string;
   mail: string;
   address: string;
@@ -29,7 +29,7 @@ const ArtistsPageElement = () => {
 
         const formattedData: Artists[] = data.map((artist) => ({
           image: artist.image || "default.jpg",
-          title: artist.name || "Nom inconnu",
+          name: artist.name || "Nom inconnu",
           phone: artist.phone || "Non disponible",
           mail: artist.mail || "Non disponible",
           address: artist.address || "Adresse inconnue",

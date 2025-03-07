@@ -4,7 +4,7 @@ import TextButton from "../atoms/TextButton";
 interface InfoCardProps {
   id: string;
   type: "artistes" | "institutions";
-  title: string;
+  name: string;
   phone?: string;
   mail?: string;
   address?: string;
@@ -15,7 +15,7 @@ interface InfoCardProps {
 const Cards = ({
   id,
   type,
-  title,
+  name,
   phone,
   address,
   genre,
@@ -31,7 +31,7 @@ const Cards = ({
   return (
     <div className="p-4 rounded-lg shadow-md w-full max-w-md">
       <img src="/images/imageRodia.png" alt="test" />
-      <h2 className="font-bold text-lg pt-8 pb-2">{title}</h2>
+      <h2 className="font-bold text-lg pt-8 pb-2">{name}</h2>
       <p className="py-2">
         <strong className="pr-2">Téléphone :</strong>
         {phone}

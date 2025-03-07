@@ -16,7 +16,7 @@ const ContactForm = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen">
+    <div className="flex justify-center items-center">
       <form className="p-6 rounded-lg shadow-lg w-[400px]">
         <label className="block font-semibold text-gray-700 mb-2">Nom</label>
         <input

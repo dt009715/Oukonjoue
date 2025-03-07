@@ -25,7 +25,7 @@ const ArtistDetailElement = ({ artistId }: { artistId: number }) => {
 
   useEffect(() => {
     if (artistId) {
-      console.log("🆔 ID de l'artiste reçu:", artistId);
+      console.log(" ID de l'artiste reçu:", artistId);
       fetchArtistDetails();
       fetchComments();
     }
@@ -34,7 +34,7 @@ const ArtistDetailElement = ({ artistId }: { artistId: number }) => {
   const fetchArtistDetails = async () => {
     try {
       console.log(
-        `🔍 Récupération des détails de l'artiste depuis ${API_URL}/${artistId}`
+        `Récupération des détails de l'artiste depuis ${API_URL}/${artistId}`
       );
 
       const response = await fetch(`${API_URL}/${artistId}`);
@@ -42,16 +42,15 @@ const ArtistDetailElement = ({ artistId }: { artistId: number }) => {
       if (!response.ok) {
         throw new Error(`Erreur HTTP: ${response.status}`);
       }
-
-      console.log("✅ Réponse reçue:", response);
-      console.log("📄 Content-Type:", response.headers.get("content-type"));
+      console.log(" Réponse reçue:", response);
+      console.log("Content-Type:", response.headers.get("content-type"));
 
       const data = await response.json();
-      console.log("🎨 Données de l'artiste:", data);
+      console.log(" Données de l'artiste:", data);
 
       setArtist(data);
     } catch (error) {
-      console.error("❌ Erreur dans fetchArtistDetails:", error);
+      console.error(" Erreur dans fetchArtistDetails:", error);
     }
   };
 

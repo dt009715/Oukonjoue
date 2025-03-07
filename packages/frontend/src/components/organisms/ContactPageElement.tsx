@@ -2,10 +2,8 @@ import ContactForm from "../molecules/FormContact";
 
 const ContactPageElement = () => {
   return (
-    <div className="w-full pt-7">
-      <h1 className="font-semibold text-3xl absolute left-1/2 transform -translate-x-1/2">
-        Contact
-      </h1>
+    <div className="relative flex flex-col w-full h-full pt-10 items-center justify-between pb-8">
+      <h1 className="font-semibold text-3xl pb-2 text-center">Contact</h1>
       <ContactForm />
     </div>
   );

@@ -1,81 +1,103 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
 import Cards from "../molecules/Cards";
 
-const cardData = {
-  title: "La Rodia",
-  phone: "0782676596",
-  address: "13 rue des fluttes agasses",
-  mail: "test@test.fr",
-  genre: "black metal",
-  description:
-    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only",
-  link: "",
-};
+interface Artists {
+  id: string;
+  image: string;
+  name: string;
+  phone: string;
+  mail: string;
+  address: string;
+  genre: string;
+  description: string;
+  link: string;
+}
+
+interface Institution {
+  id: string;
+  name: string;
+  genre: string;
+  phone: string;
+  address: string;
+  mail: string;
+  description: string;
+  image: string;
+}
+
 const HomePageElement = () => {
+  const [institutions, setInstitutions] = useState<Institution[]>([]);
+  const [artists, setArtists] = useState<Artists[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [institutionsRes, artistsRes] = await Promise.all([
+          axios.get("http://localhost:3001/institutions"),
+          axios.get("http://localhost:3001/artistes"),
+        ]);
+
+        setInstitutions(institutionsRes.data.slice(0, 3));
+        setArtists(artistsRes.data.slice(0, 3));
+      } catch (error) {
+        console.error("Erreur lors du chargement des données :", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <p className="text-center mt-10">Chargement en cours...</p>;
+  }
+
   return (
     <div>
-      <div className=" pt-10 px-8">
+      <div className="pt-10 px-8">
         <h1 className="font-semibold pb-6 text-2xl">Objectif du site</h1>
         <p className="text-justify text-sm">
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industry's standard dummy text ever
-          since the 1500s, when an unknown printer took a galley of type and
-          scrambled it to make a type specimen book. It has survived not only
-          five centuries, but also the leap into electronic typesetting,
-          remaining essentially unchanged. It was popularised in the 1960s with
-          the release of Letraset sheets containing Lorem Ipsum passages, and
-          more recently with desktop publishing software like Aldus PageMaker
-          including versions of Lorem Ipsum. Why do we use it? It is a long
-          established fact that a reader will be distracted by the readable
-          content of a page when looking at its layout. The point of using Lorem
-          Ipsum is that it has a more-or-less normal distribution of letters, as
-          opposed to using 'Content here, content here', making it look like
-          readable English. Many desktop publishing packages and web page
-          editors now use Lorem Ipsum as their default model text, and a search
-          for 'lorem ipsum' will uncover many web sites still in their infancy.
-          Various versions have evolved over the years, sometimes by accident,
-          sometimes on purpose (injected humour and the like). Where does it
-          come from? Contrary to popular belief, Lorem Ipsum is not simply
-          random text. It has roots in a piece of classical Latin literature
-          from 45 BC, making it over 2000 years old. Richard McClintock, a Latin
-          professor at Hampden-Sydney College in Virginia, looked up one of the
-          more obscure Latin words, consectetur, from a Lorem Ipsum passage, and
-          going through the cites of the word in classical literature,
-          discovered the undoubtable source. Lorem Ipsum comes from sections
-          1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes
-          of Good and Evil) by Cicero, written in 45 BC. This book is a treatise
-          on the theory of ethics, very popular during the Renaissance. The
-          first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from
-          a line in section 1.10.32. The standard chunk of Lorem Ipsum used
-          since the 1500s is reproduced below for those interested. Sections
-          1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are
-          also reproduced in their exact original form, accompanied by English
-          versions from the 1914 translation by H. Rackham.
+          Bienvenue sur notre plateforme dédiée aux institutions culturelles et
+          aux artistes !
         </p>
       </div>
+
+      {/* Institutions */}
       <div className="pt-8 px-8">
         <h1 className="font-semibold pb-6 text-2xl">Les Institutions</h1>
         <div className="flex sm:flex-col justify-center gap-10">
-          {[...Array(3)].map((_, index) => (
-            <Cards
-              key={index}
-              {...cardData}
-              type="institutions"
-              id={cardData.link}
-            />
-          ))}
+          {institutions.length > 0 ? (
+            institutions.map((institution) => (
+              <Cards
+                key={institution.id}
+                {...institution}
+                type="institutions"
+                id={institution.id}
+              />
+            ))
+          ) : (
+            <p>Aucune institution trouvée.</p>
+          )}
         </div>
       </div>
+
       <div className="pt-8 px-8">
         <h1 className="font-semibold pb-6 text-2xl">Les Artistes</h1>
-        <div className="flex justify-center sm:flex-col gap-10">
-          {[...Array(3)].map((_, index) => (
-            <Cards
-              key={index}
-              {...cardData}
-              type="artistes"
-              id={cardData.link}
-            />
-          ))}
+        <div className="flex sm:flex-col justify-center gap-10">
+          {artists.length > 0 ? (
+            artists.map((artist) => (
+              <Cards
+                key={artist.id}
+                {...artist}
+                type="artistes"
+                id={artist.id}
+              />
+            ))
+          ) : (
+            <p>Aucun artiste trouvé.</p>
+          )}
         </div>
       </div>
     </div>

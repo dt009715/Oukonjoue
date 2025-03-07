@@ -5,7 +5,7 @@ import Cards from "../molecules/Cards";
 
 interface Institution {
   image: string;
-  title: string;
+  name: string;
   phone: string;
   mail: string;
   address: string;
@@ -30,7 +30,7 @@ const InstitutionElement: React.FC = () => {
 
         const formattedData: Institution[] = data.map((institution) => ({
           image: institution.image || "",
-          title: institution.name || "Nom inconnu",
+          name: institution.name || "Nom inconnu",
           phone: institution.phone || "Non disponible",
           mail: institution.mail || "Non disponible",
           address: institution.address || "Adresse inconnue",

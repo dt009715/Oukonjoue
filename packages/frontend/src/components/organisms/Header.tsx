@@ -20,7 +20,7 @@ const Header = () => {
         <TextButton onClick={() => navigate("/contact")}>Contact</TextButton>
       </div>
       <div className="flex justify-end pr-8 gap-8 w-1/3">
-        <Button onClick={() => {}}> Se connecter</Button>
+        <Button onClick={() => navigate("/login")}> Se connecter</Button>
         <Button onClick={() => navigate("/register")}> S'inscrire</Button>
       </div>
     </div>
