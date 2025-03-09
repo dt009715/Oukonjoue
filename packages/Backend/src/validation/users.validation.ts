@@ -12,8 +12,4 @@ export const userValidation = z.object({
       message: "Le mot de passe doit contenir au moins un symbole",
     }),
   email: z.string().email({ message: "Adresse email invalide" }),
-  /* .refine(async (email): boolean => {
-            // On vérifie que l'email est unique dans la db par exemple
-            // C'est une fonction pour faire ses verifications "custom"
-        }) */
 });

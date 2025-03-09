@@ -8,7 +8,7 @@ export const getAllArtists = async () => {
 // Get artist by ID
 export const getArtistById = async (id: string) => {
   return await prisma.artists.findUnique({
-    where: { id: Number(id) }, // Convert id to number
+    where: { id: Number(id) },
   });
 };
 
@@ -43,6 +43,6 @@ export const createArtist = async (data: {
 // Delete an artist by ID
 export const deleteArtist = async (id: string) => {
   return await prisma.artists.delete({
-    where: { id: Number(id) }, // Convert id to number
+    where: { id: Number(id) },
   });
 };

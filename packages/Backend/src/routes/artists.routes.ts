@@ -8,13 +8,13 @@ import {
 const router = Router();
 console.log("🚀 Routes artistes chargées !");
 
-// [GET] http://localhost:3000/artists
+// [GET] http://localhost:3001/artists
 router.get("/", getArtists);
 
-// [GET] http://localhost:3000/api/artistes/:id
+// [GET] http://localhost:3001/api/artistes/:id
 router.get("/:id", getArtist);
 
-//[DELETE] http://loclahost:3000/deleteArtist/:id
+//[DELETE] http://loclahost:3001/deleteArtist/:id
 router.delete("/createArtist", deleteOneArtist);
 
 export default router;

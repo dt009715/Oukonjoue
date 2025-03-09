@@ -33,7 +33,7 @@ const InstitutionDetailElement = ({
     if (institutionId) {
       fetchInstitutionIdDetails();
       fetchComments();
-      checkAuthentication(); // Vérifier si l'utilisateur est connecté
+      checkAuthentication();
     }
   }, [institutionId]);
 

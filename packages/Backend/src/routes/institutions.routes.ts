@@ -7,13 +7,13 @@ import {
 
 const router = Router();
 
-// [GET] http://localhost:3000/institutions
+// [GET] http://localhost:3001/institutions
 router.get("/", getInstitutions);
 
-// [GET] http://localhost:3000/institutions/:id
+// [GET] http://localhost:3001/institutions/:id
 router.get("/:id", getInstitutionById);
 
-// [DELETE] http://localhost:3000/institutions/deleteinst/:id
+// [DELETE] http://localhost:3001/institutions/deleteinst/:id
 router.delete("/deleteinst/:id", deleteOneInstitution);
 
 export default router;

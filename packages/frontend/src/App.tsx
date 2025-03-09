@@ -2,11 +2,14 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ArtistDetailsPage from "./components/UI/ArtistDetailsPage";
 import ArtistsPage from "./components/UI/ArtistsPage";
 import Contact from "./components/UI/Contact";
+import CookiePage from "./components/UI/CookiePage";
 import Home from "./components/UI/HomePage";
 import InstitutionDetailsPage from "./components/UI/InstitutionDetailsPage";
 import Institutions from "./components/UI/InstitutionsPage";
 import LoginPage from "./components/UI/LoginPage";
 import RegisterPage from "./components/UI/RegisterPage";
+
+import LegalMentionsPage from "./components/UI/LegalMentionsPage";
 function App() {
   return (
     <div className="w-full min-h-screen flex flex-col">
@@ -23,6 +26,8 @@ function App() {
             path="/institutions/:id"
             element={<InstitutionDetailsPage />}
           />
+          <Route path="/cookie" element={<CookiePage />} />
+          <Route path="/legal-mentions" element={<LegalMentionsPage />} />
         </Routes>
       </BrowserRouter>
     </div>

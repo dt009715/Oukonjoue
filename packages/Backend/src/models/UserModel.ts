@@ -17,7 +17,7 @@ export const registerUser = async (data: {
   description?: string;
 }) => {
   try {
-    // Vérifie si l'email existe déjà
+    // mail checking
     const existingUser = await prisma.user.findUnique({
       where: { email: data.email },
     });
@@ -26,10 +26,10 @@ export const registerUser = async (data: {
       throw new Error("Cet email est déjà utilisé.");
     }
 
-    // Hachage du mot de passe
+    // Hash password
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
-    // Création de l'utilisateur
+    // create User
     const newUser = await prisma.user.create({
       data: {
         email: data.email,
@@ -38,7 +38,7 @@ export const registerUser = async (data: {
       },
     });
 
-    // Selon le type, ajouter dans Artist ou Institution
+    // select if type = ARTTSTS or INSTITUTIONS
     if (data.role === "ARTISTS") {
       await prisma.artists.create({
         data: {

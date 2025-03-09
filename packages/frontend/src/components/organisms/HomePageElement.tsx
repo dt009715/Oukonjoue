@@ -58,9 +58,23 @@ const HomePageElement = () => {
     <div>
       <div className="pt-10 px-8">
         <h1 className="font-semibold pb-6 text-2xl">Objectif du site</h1>
-        <p className="text-justify text-sm">
-          Bienvenue sur notre plateforme dédiée aux institutions culturelles et
-          aux artistes !
+        <p className="text-justify ">
+          Nous sommes Valentin et Diego, deux musiciens passionnés qui ont
+          décidé de créer un site pour aider les groupes amateurs à trouver des
+          lieux pour jouer et se faire connaître. Ayant nous-mêmes vécu les
+          difficultés de trouver des concerts et des événements où jouer, nous
+          avons voulu simplifier cette recherche pour d’autres groupes en
+          offrant une plateforme où ils peuvent facilement trouver des salles de
+          concert, des bars, des festivals, et bien d’autres lieux prêts à
+          accueillir des artistes dans leur région. Notre objectif est de donner
+          aux groupes amateurs les moyens de se produire et d'augmenter leur
+          visibilité sans se soucier des barrières administratives ou
+          logistiques. Grâce à notre site, chaque groupe peut découvrir des
+          opportunités près de chez eux et ainsi se concentrer sur ce qui compte
+          vraiment : la musique. Nous croyons en la force de la scène locale et
+          voulons aider les artistes à se connecter, à grandir et à faire
+          entendre leur musique là où ils sont les plus susceptibles de toucher
+          leur public.
         </p>
       </div>
 

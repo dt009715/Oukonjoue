@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 
 const API_URL = "http://localhost:3001/artistes";
 
-// Types pour les données artistiques et les commentaires
 interface Artist {
   id: number;
   name: string;

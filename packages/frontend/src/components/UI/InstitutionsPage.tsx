@@ -4,9 +4,11 @@ import InstitutionsElement from "../organisms/InstitutionsElement";
 
 const Institutions = () => {
   return (
-    <div className="bg-background">
+    <div className="bg-background flex flex-col min-h-screen">
       <Header />
-      <InstitutionsElement />
+      <div className="flex-1">
+        <InstitutionsElement />
+      </div>
       <Footer />
     </div>
   );

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const RegisterForm = () => {
   const navigate = useNavigate();
-  const [type, setType] = useState("INSTITUTIONS"); // "institution" ou "artist"
+  const [type, setType] = useState("INSTITUTIONS");
   const [formData, setFormData] = useState({
     image: undefined,
     name: "",

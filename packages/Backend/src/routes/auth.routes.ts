@@ -3,11 +3,11 @@ import { logout, register } from "../controllers/auth.controller";
 
 const router = Router();
 
-// [POST] http://localhost:3000/auth/register
+// [POST] http://localhost:3001/auth/register
 router.post("/register", (req, res) => {
   console.log("Requête POST /register reçue !");
-  console.log("Données reçues :", req.body); // Affiche les données envoyées
-  register(req, res); // Appelle la fonction `register` pour gérer l'inscription
+  console.log("Données reçues :", req.body);
+  register(req, res);
 });
 
 // [POST] http://localhost:3001/auth/login
@@ -17,7 +17,7 @@ router.post("/login", (req, res) => {
   res.json({ message: "OK" });
 });
 
-// [POST] http://localhost:3000/auth/logout
+// [POST] http://localhost:3001/auth/logout
 router.get("/logout", logout);
 
 export default router;

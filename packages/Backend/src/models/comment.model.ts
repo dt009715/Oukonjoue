@@ -4,6 +4,7 @@ import { NewComment } from "../entities/Comment";
 import { comment } from "../schemas";
 import { logger } from "../utils";
 
+//create a new comment
 export const pushComment = async (newComment: NewComment) => {
   try {
     const { commentId, authorId, content, createdAt } = newComment;
@@ -23,6 +24,7 @@ export const pushComment = async (newComment: NewComment) => {
   }
 };
 
+//delete a comment
 export const deleteComment = async (id: string, userId: string) => {
   try {
     return await db
@@ -37,6 +39,7 @@ export const deleteComment = async (id: string, userId: string) => {
   }
 };
 
+//get a comment by id
 export const getCommentById = async (id: string) => {
   try {
     return await db.query.comment.findFirst({
