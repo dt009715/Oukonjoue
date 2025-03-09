@@ -27,7 +27,7 @@ export const getArtists = async (
 export const getArtist = async (req: Request, res: Response): Promise<void> => {
   try {
     const artistId = req.params.id;
-    console.log(`🎯 Recherche de l'artiste avec l'ID: ${artistId}`);
+    console.log(` Recherche de l'artiste avec l'ID: ${artistId}`);
 
     const artist = await getArtistById(artistId);
 
@@ -38,7 +38,7 @@ export const getArtist = async (req: Request, res: Response): Promise<void> => {
 
     res.json(artist);
   } catch (error) {
-    console.error("❌ Erreur serveur:", error);
+    console.error(" Erreur serveur:", error);
     const err = error as Error;
     res.status(500).json({
       message: "Erreur lors de la récupération de l'artiste",

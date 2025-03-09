@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Button from "../atoms/Button";
 
 const API_URL = "http://localhost:3001/institutions";
 
@@ -26,36 +27,29 @@ const InstitutionDetailElement = ({
   const [institution, setInstitution] = useState<Institution | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     if (institutionId) {
-      console.log("🆔 ID de l'institution reçu:", institutionId);
       fetchInstitutionIdDetails();
       fetchComments();
+      checkAuthentication(); // Vérifier si l'utilisateur est connecté
     }
   }, [institutionId]);
 
+  const checkAuthentication = () => {
+    const token = localStorage.getItem("authToken");
+    setIsAuthenticated(!!token);
+  };
+
   const fetchInstitutionIdDetails = async () => {
     try {
-      console.log(
-        `🔍 Récupération des détails de l'artiste depuis ${API_URL}/${institutionId}`
-      );
-
       const response = await fetch(`${API_URL}/${institutionId}`);
-
-      if (!response.ok) {
-        throw new Error(`Erreur HTTP: ${response.status}`);
-      }
-
-      console.log("Réponse reçue:", response);
-      console.log(" Content-Type:", response.headers.get("content-type"));
-
+      if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);
       const data = await response.json();
-      console.log(" Données de l'artiste:", data);
-
       setInstitution(data);
     } catch (error) {
-      console.error(" Erreur dans fetchArtistDetails:", error);
+      console.error("Erreur dans fetchInstitutionIdDetails:", error);
     }
   };
 
@@ -73,6 +67,11 @@ const InstitutionDetailElement = ({
 
   const handleAddComment = async () => {
     if (newComment.trim() === "") return;
+
+    if (!isAuthenticated) {
+      alert("Vous devez être connecté pour ajouter un commentaire.");
+      return;
+    }
 
     try {
       const response = await fetch(`${API_URL}/comments`, {
@@ -92,8 +91,30 @@ const InstitutionDetailElement = ({
     }
   };
 
+  const handleDeleteInstitution = async () => {
+    if (
+      window.confirm("Êtes-vous sûr de vouloir supprimer cette institution ?")
+    ) {
+      try {
+        const response = await fetch(`${API_URL}/${institutionId}`, {
+          method: "DELETE",
+        });
+
+        if (!response.ok)
+          throw new Error("Erreur lors de la suppression de l'institution.");
+
+        alert("Institution supprimée avec succès.");
+
+        window.location.href = "/";
+      } catch (error) {
+        console.error("Erreur:", error);
+        alert("Une erreur est survenue lors de la suppression.");
+      }
+    }
+  };
+
   if (!institution) {
-    return <p>Chargement des détails de l'artiste...</p>;
+    return <p>Chargement des détails de l'institution...</p>;
   }
 
   return (
@@ -148,14 +169,27 @@ const InstitutionDetailElement = ({
             placeholder="Ajoutez un commentaire..."
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
+            disabled={!isAuthenticated}
           />
           <button
-            className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="mt-2 px-4 py-2 bg-button text-white rounded-lg hover:bg-blue-700"
             onClick={handleAddComment}
+            disabled={!isAuthenticated}
           >
             Ajouter
           </button>
+          {!isAuthenticated && (
+            <p className="text-red-500 text-sm mt-2">
+              Vous devez être connecté pour ajouter un commentaire.
+            </p>
+          )}
         </div>
+      </div>
+      <div className="pt-4">
+        <Button
+          children="supprimer mon compte"
+          onClick={handleDeleteInstitution}
+        />
       </div>
     </div>
   );

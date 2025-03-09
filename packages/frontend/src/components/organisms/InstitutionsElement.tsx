@@ -64,7 +64,7 @@ const InstitutionElement: React.FC = () => {
           <FilterButton onClick={() => {}} />
         </div>
       </div>
-      <div className="grid grid-cols-1 pl-8 grid-cols-2 grid-cols-3 gap-6 p-4">
+      <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 upLg:grid-cols-4 gap-6 px-4">
         {cardDataList.map((cardData, index) => (
           <Cards
             key={index}

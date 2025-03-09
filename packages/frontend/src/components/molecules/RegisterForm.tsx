@@ -1,7 +1,9 @@
 import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const RegisterForm = () => {
+  const navigate = useNavigate();
   const [type, setType] = useState("INSTITUTIONS"); // "institution" ou "artist"
   const [formData, setFormData] = useState({
     image: undefined,
@@ -10,8 +12,8 @@ const RegisterForm = () => {
     phone: "",
     email: "",
     city: "",
-    address: "",
-    genre: "",
+    address: undefined,
+    category: "",
     description: "",
   });
 
@@ -19,7 +21,6 @@ const RegisterForm = () => {
     const { name, value, files } = event.target;
 
     if (name === "image") {
-      // Vérifie si un fichier est sélectionné et s'il est valide
       const file = files ? files[0] : null;
       if (file && (file.type === "image/png" || file.type === "image/jpeg")) {
         setFormData({
@@ -29,12 +30,21 @@ const RegisterForm = () => {
       } else {
         alert("Veuillez télécharger une image au format PNG ou JPEG");
       }
+    } else if (name === "phone") {
+      let rawNumber = value.replace(/\D/g, "");
+      let formattedNumber = rawNumber.replace(/(\d{2})(?=\d)/g, "$1 ").trim();
+
+      setFormData({
+        ...formData,
+        phone: formattedNumber,
+      });
     } else {
       setFormData({
         ...formData,
         [name]: value,
       });
     }
+    console.log("Changement de champ :", name, "Nouvelle valeur :", value);
   };
 
   const handleTypeChange = (e: any) => {
@@ -73,11 +83,10 @@ const RegisterForm = () => {
 
     try {
       const url = "http://localhost:3001/auth/register";
-      const dataToSend: any = {
+      const dataToSend = {
         ...formData,
         mail: formData.email,
         type: type,
-        image: formData.image ? formData.image : "",
       };
 
       if (imageUrl) {
@@ -86,24 +95,23 @@ const RegisterForm = () => {
         delete dataToSend.image;
       }
 
-      console.log("Données envoyées :", dataToSend);
+      if (type === "ARTISTS") {
+        delete dataToSend.address;
+      }
+
+      // Afficher les données avant l'envoi
+      console.log("Données envoyées : ", dataToSend);
 
       const response = await axios.post(url, dataToSend, {
         headers: { "Content-Type": "application/json" },
       });
 
-      console.log("Données envoyées avec succès:", response.data);
-    } catch (error: any) {
-      if (error.response) {
-        console.error("Erreur API :", error.response.data);
-        if (error.response.data.data) {
-          error.response.data.data.forEach((err: any) =>
-            console.error(`Champ invalide: ${err.message}`)
-          );
-        }
-      } else {
-        console.error("Erreur lors de l'envoi des données:", error);
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+        navigate("/");
       }
+    } catch (error) {
+      console.error("Erreur lors de l'envoi des données", error);
     }
   };
   return (
@@ -140,7 +148,7 @@ const RegisterForm = () => {
             type="file"
             id="image"
             name="image"
-            accept="image/png, image/jpeg" // Restreint aux formats PNG et JPEG
+            accept="image/png, image/jpeg"
             onChange={handleChange}
             className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           />
@@ -234,23 +242,25 @@ const RegisterForm = () => {
           />
         </div>
 
-        <div className="mb-4">
-          <label
-            htmlFor="address"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Adresse :
-          </label>
-          <input
-            type="text"
-            id="address"
-            name="address"
-            placeholder="Entrez votre adresse"
-            value={formData.address}
-            onChange={handleChange}
-            className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          />
-        </div>
+        {type !== "ARTISTS" && (
+          <div className="mb-4">
+            <label
+              htmlFor="address"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Adresse :
+            </label>
+            <input
+              type="text"
+              id="address"
+              name="address"
+              placeholder="Entrez votre adresse"
+              value={formData.address}
+              onChange={handleChange}
+              className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
+            />
+          </div>
+        )}
         <div className="mb-4">
           <label
             htmlFor="description"
@@ -260,14 +270,14 @@ const RegisterForm = () => {
           </label>
           <input
             type="text"
-            id="genre"
-            name="genre"
+            id="category"
+            name="category"
             placeholder={
               type === "ARTISTS"
                 ? "Entrez votre/vos genres musicaux"
                 : "Entrez le type d'institution"
             }
-            value={formData.genre}
+            value={formData.category}
             onChange={handleChange}
             className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           />

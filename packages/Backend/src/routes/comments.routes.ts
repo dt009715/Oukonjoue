@@ -4,11 +4,11 @@ import express, { Request, Response } from "express";
 const prisma = new PrismaClient();
 const router = express.Router();
 
-router.get("/:artistId", async (req: Request, res: Response) => {
-  const { artistId } = req.params;
+router.get("/:insitutionsId", async (req: Request, res: Response) => {
+  const { institutionId } = req.params;
   try {
     const comments = await prisma.comments.findMany({
-      where: { id: parseInt(artistId) },
+      where: { id: parseInt(institutionId) },
     });
     res.json(comments);
   } catch (error) {
@@ -18,17 +18,17 @@ router.get("/:artistId", async (req: Request, res: Response) => {
   }
 });
 
-router.post("/", async (req: Request, res: Response): Promise<void> => {
+/*router.post("/", async (req: Request, res: Response): Promise<void> => {
   try {
-    const { artistId, content, author } = req.body;
-
-    if (!artistId || !content) {
-      res.status(400).json({ error: "artistId et content sont requis." });
-      return;
-    }
+    const userId = getUserIdFromToken();
+    const { institutionId, content } = req.body;
 
     const comment = await prisma.comments.create({
-      data: { id: Number(artistId), content, author },
+      data: {
+        content: content,
+        userId: userId,
+        institutionId: institutionId,
+      },
     });
 
     res.status(201).json(comment);
@@ -36,7 +36,7 @@ router.post("/", async (req: Request, res: Response): Promise<void> => {
     console.error("Erreur lors de l’ajout du commentaire:", error);
     res.status(500).json({ error: "Erreur lors de l’ajout du commentaire." });
   }
-});
+});*/
 
 router.delete("/:id", async (req: Request, res: Response) => {
   const { id } = req.params;

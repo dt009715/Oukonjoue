@@ -22,9 +22,9 @@ model User {
 model Artists {
   id        Int      @id @default(autoincrement())
   name      String
-  address   String?
+  city String
   phone     String?
-  mail      String?
+  mail      String
   category  String?
   image      String?
   description String?
@@ -38,9 +38,9 @@ model Institutions {
   id        Int      @id @default(autoincrement())
   city      String
   name      String
-  address   String?
+  address   String
   phone     String?
-  mail      String?
+  mail      String
   category  String?
   image      String?
   description String?

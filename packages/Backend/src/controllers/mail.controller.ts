@@ -5,33 +5,33 @@ import nodemailer from "nodemailer";
 dotenv.config();
 
 export const sendEmail = async (req: Request, res: Response) => {
+  const { name, subject, message } = req.body;
+
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+  });
+
+  const mailOptions = {
+    from: process.env.SMTP_USER,
+    to: "touchard.diego@gmail.com",
+    subject: subject,
+    text: `Nom: ${name}\n\nMessage:\n${message}`,
+  };
+
   try {
-    const { name, email, message } = req.body;
-
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER, // user mail
-        pass: process.env.EMAIL_PASS, // user password
-      },
-    });
-
-    // mail options
-    const mailOptions = {
-      from: email, // sending by
-      to: "oukonjoue@gmail.com ",
-      subject: `Nouveau message de ${name}`,
-      text: message,
-    };
-
-    // email sent
     await transporter.sendMail(mailOptions);
-
-    res.status(200).json({ message: "E-mail envoyé avec succès !" });
+    res.json({ success: true, message: "E-mail envoyé !" });
   } catch (error) {
-    console.error("Erreur d'envoi de l'email:", error);
+    console.error("Erreur d'envoi de l'e-mail :", error);
     res
       .status(500)
-      .json({ message: "Erreur lors de l'envoi de l'e-mail", error });
+      .json({ success: false, message: "Échec de l'envoi de l'e-mail." });
   }
 };

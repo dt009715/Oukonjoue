@@ -2,7 +2,7 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 async function main() {
-  await prisma.institutions.createMany({
+  /*await prisma.institutions.createMany({
     data: [
       {
         city: "Amage",
@@ -11,19 +11,21 @@ async function main() {
         phone: "06 84 91 65 34",
         createdAt: new Date(),
         category: "Café",
-        image: "https://example.com/image1.jpg", // Replace with actual image URL
+        image: "https://example.com/image1.jpg",
         description: "Un café charmant avec une ambiance conviviale.",
+        mail: "cafedes3fontaines@exemple.com",
       },
       {
         city: "Angirey",
         name: "Festival Les Angivrades",
-        address: "",
+        address: "Angirey",
         phone: "03 84 32 74 40",
         createdAt: new Date(),
         category: "Festival",
-        image: "https://example.com/image2.jpg", // Replace with actual image URL
+        image: "https://example.com/image2.jpg",
         description:
           "Un festival de musique en plein air avec des artistes locaux.",
+        mail: "festivallesangivrades@exemple.com",
       },
       {
         city: "Autet",
@@ -33,7 +35,7 @@ async function main() {
         mail: "laplageautet@orange.fr",
         createdAt: new Date(),
         category: "Restaurant",
-        image: "https://example.com/image3.jpg", // Replace with actual image URL
+        image: "https://example.com/image3.jpg",
         description:
           "Un restaurant avec vue sur la mer, parfait pour un repas en famille.",
       },
@@ -41,12 +43,13 @@ async function main() {
         city: "Bonnevent-Velloreille",
         name: "Festival en serre",
         address: "8 rue de Vauvenise",
-        phone: null, // ✅ Correction
+        phone: "01 23 45 67 89", // Faux numéro
         createdAt: new Date(),
         category: "Festival",
-        image: "https://example.com/image4.jpg", // Replace with actual image URL
+        image: "https://example.com/image4.jpg",
         description:
           "Un festival unique dans une serre, alliant musique et nature.",
+        mail: "festivalenserre@exemple.com",
       },
       {
         city: "Breuches",
@@ -55,18 +58,19 @@ async function main() {
         phone: "06 70 47 47 44",
         createdAt: new Date(),
         category: "Discothèque",
-        image: "https://example.com/image5.jpg", // Replace with actual image URL
+        image: "https://example.com/image5.jpg",
         description: "Une discothèque animée avec les meilleurs DJ du moment.",
+        mail: "crystaldance@exemple.com",
       },
       {
         city: "Bucey-lès-Gy",
         name: "Hot’zone Festival",
         address: "",
-        mail: "contact@hotzonefestival.com", // ✅ Correction du champ
-        phone: null,
+        mail: "contact@hotzonefestival.com",
+        phone: "01 23 45 67 89",
         createdAt: new Date(),
         category: "Festival",
-        image: "https://example.com/image6.jpg", // Replace with actual image URL
+        image: "https://example.com/image6.jpg",
         description:
           "Un festival de musique électronique pour les amateurs de sensations fortes.",
       },
@@ -77,9 +81,10 @@ async function main() {
         phone: "06 32 44 83 07",
         createdAt: new Date(),
         category: "Festival",
-        image: "https://example.com/image7.jpg", // Replace with actual image URL
+        image: "https://example.com/image7.jpg",
         description:
           "Un festival immersif avec de la musique traditionnelle en pleine nature.",
+        mail: "musicenbrousse@exemple.com",
       },
       {
         city: "Chargey-lès-Gray",
@@ -89,7 +94,7 @@ async function main() {
         mail: "chargeoise@larenterouge-brasserie.fr",
         createdAt: new Date(),
         category: "Brasserie",
-        image: "https://example.com/image8.jpg", // Replace with actual image URL
+        image: "https://example.com/image8.jpg",
         description:
           "Une brasserie artisanale offrant des bières locales et un accueil chaleureux.",
       },
@@ -97,11 +102,11 @@ async function main() {
         city: "Colombe-lès-Vesoul",
         name: "Colomb’in Rock Festival",
         address: "Rue du stade",
-        phone: null, // ✅ Correction
+        phone: "01 23 45 67 89", // Faux numéro
         mail: "contact@colombin-rock.fr",
         createdAt: new Date(),
         category: "Festival",
-        image: "https://example.com/image9.jpg", // Replace with actual image URL
+        image: "https://example.com/image9.jpg",
         description:
           "Un festival rock énergique dans la belle ville de Colombe-lès-Vesoul.",
       },
@@ -109,12 +114,13 @@ async function main() {
         city: "Combeaufontaine",
         name: "Festival Musique en Fête",
         address: "Salle des belles fontaines",
-        phone: null, // ✅ Correction
+        phone: "01 23 45 67 89", // Faux numéro
         createdAt: new Date(),
         category: "Festival",
-        image: "https://example.com/image10.jpg", // Replace with actual image URL
+        image: "https://example.com/image10.jpg",
         description:
           "Un événement musical rassemblant des artistes de divers horizons.",
+        mail: "musiqueenfete@exemple.com",
       },
       {
         city: "Courchaton",
@@ -124,7 +130,7 @@ async function main() {
         mail: "gilbert.rey40@sfr.fr",
         createdAt: new Date(),
         category: "Bar",
-        image: "https://example.com/image11.jpg", // Replace with actual image URL
+        image: "https://example.com/image11.jpg",
         description: "Un pub où l'on peut savourer une bonne bière entre amis.",
       },
       {
@@ -135,7 +141,7 @@ async function main() {
         mail: "festival@musetmemoire.com",
         createdAt: new Date(),
         category: "Festival",
-        image: "https://example.com/image12.jpg", // Replace with actual image URL
+        image: "https://example.com/image12.jpg",
         description:
           "Un festival mêlant musique et histoire dans un cadre enchanteur.",
       },
@@ -147,7 +153,7 @@ async function main() {
         mail: "les.jeudis.a.faucogney@lilo.org",
         createdAt: new Date(),
         category: "Marché",
-        image: "https://example.com/image13.jpg", // Replace with actual image URL
+        image: "https://example.com/image13.jpg",
         description:
           "Un marché où l'on trouve des produits locaux et de qualité.",
       },
@@ -155,10 +161,11 @@ async function main() {
         city: "Faucogney-et-la-Mer",
         name: "Le Café du Bon Coin",
         address: "Rue Marcel Mauffrey",
+        phone: "01 23 45 67 89", // Faux numéro
         mail: "associationleboncoin@yahoo.fr",
         createdAt: new Date(),
         category: "Café",
-        image: "https://example.com/image14.jpg", // Replace with actual image URL
+        image: "https://example.com/image14.jpg",
         description:
           "Un café associatif qui privilégie les rencontres et échanges.",
       },
@@ -170,7 +177,7 @@ async function main() {
         mail: "aubergelefontenois@orange.fr",
         createdAt: new Date(),
         category: "Auberge",
-        image: "https://example.com/image15.jpg", // Replace with actual image URL
+        image: "https://example.com/image15.jpg",
         description:
           "Une auberge pittoresque offrant une cuisine traditionnelle.",
       },
@@ -181,8 +188,9 @@ async function main() {
         phone: "06 72 24 49 21",
         createdAt: new Date(),
         category: "Restaurant",
-        image: "https://example.com/image16.jpg", // Replace with actual image URL
+        image: "https://example.com/image16.jpg",
         description: "Un restaurant réputé pour ses plats faits maison.",
+        mail: "petitportdefouchecourt@exemple.com",
       },
       {
         city: "Fougerolles-Saint-Valbert",
@@ -192,7 +200,7 @@ async function main() {
         mail: "restaurant.lagabiotte@gmail.com",
         createdAt: new Date(),
         category: "Restaurant",
-        image: "https://example.com/image17.jpg", // Replace with actual image URL
+        image: "https://example.com/image17.jpg",
         description:
           "Un restaurant cabaret où dîner et assister à des spectacles.",
       },
@@ -200,10 +208,11 @@ async function main() {
         city: "Fretigney",
         name: "Salle Rock Garage",
         address: "17 route de Gray",
+        phone: "03 82 56 47 55",
         mail: "associationdeneb@gmail.com",
         createdAt: new Date(),
         category: "Salle de concert",
-        image: "https://example.com/image18.jpg", // Replace with actual image URL
+        image: "https://example.com/image18.jpg",
         description:
           "Une salle de concert où se produisent des groupes de rock locaux.",
       },
@@ -215,7 +224,7 @@ async function main() {
         mail: "voixlafestival@orange.fr",
         createdAt: new Date(),
         category: "Festival",
-        image: "https://example.com/image19.jpg", // Replace with actual image URL
+        image: "https://example.com/image19.jpg",
         description: "Un festival vocal avec des performances exceptionnelles.",
       },
       {
@@ -223,21 +232,23 @@ async function main() {
         name: "Festival Rolling Saône",
         address: "Les Halles Sauzey",
         phone: "03 84 65 18 15",
+        mail: "test@mail.com",
         createdAt: new Date(),
         category: "Festival",
-        image: "https://example.com/image20.jpg", // Replace with actual image URL
+        image: "https://example.com/image20.jpg",
         description: "Un événement festif avec une ambiance musicale unique.",
       },
       {
         city: "Gray",
         name: "Bar de l’Écluse",
         address: "3 quai de l’Écluse",
-        phone: null, // ✅ Correction
+        phone: "01 23 45 67 89", // Faux numéro
         createdAt: new Date(),
         category: "Bar",
-        image: "https://example.com/image21.jpg", // Replace with actual image URL
+        image: "https://example.com/image21.jpg",
         description:
           "Un bar tranquille au bord de l'eau pour un moment de détente.",
+        mail: "bardelecluse@exemple.com",
       },
       {
         city: "Vesoul",
@@ -247,7 +258,7 @@ async function main() {
         mail: "contact@theatre-edwige-feuillere.fr",
         createdAt: new Date(),
         category: "Festival",
-        image: "https://example.com/image22.jpg", // Replace with actual image URL
+        image: "https://example.com/image22.jpg",
         description: "Un hommage musical à l'artiste Jacques Brel.",
       },
       {
@@ -258,7 +269,7 @@ async function main() {
         mail: "contact@theatre-edwige-feuillere.fr",
         createdAt: new Date(),
         category: "Théâtre",
-        image: "https://example.com/image23.jpg", // Replace with actual image URL
+        image: "https://example.com/image23.jpg",
         description:
           "Un théâtre accueillant offrant des spectacles de qualité.",
       },
@@ -270,58 +281,124 @@ async function main() {
         mail: "vesoul@mybeers.fr",
         createdAt: new Date(),
         category: "Bar",
-        image: "https://example.com/image24.jpg", // Replace with actual image URL
+        image: "https://example.com/image24.jpg",
         description: "Un bar spécialisé dans la bière artisanale.",
       },
     ],
-    skipDuplicates: true, // ✅ Évite les erreurs si une entrée existe déjà
+    skipDuplicates: true,
   });
 
   console.log("Données insérées avec succès !");
-}
+}*/
+  await prisma.artists.createMany({
+    data: [
+      {
+        name: "The Electric Waves",
+        city: "Paris",
+        phone: "+33 6 12 34 56 78",
+        mail: "contact@electricwaves.com",
+        category: "Rock",
+        image: "",
+        description: "A dynamic rock band bringing electrifying performances.",
+        createdAt: new Date(),
+      },
+      {
+        name: "Jazz Fusion Collective",
+        city: "Lyon",
+        phone: "+33 7 98 76 54 32",
+        mail: "info@jazzfusioncollective.com",
+        category: "Jazz",
+        image: "",
+        description: "A blend of smooth jazz and experimental fusion.",
+        createdAt: new Date(),
+      },
+      {
+        name: "Hip-Hop Syndicate",
+        city: "Marseille",
+        phone: "+33 6 23 45 67 89",
+        mail: "booking@hiphopsy.com",
+        category: "Hip-Hop",
+        image: "",
+        description: "A collective of street-savvy hip-hop artists.",
+        createdAt: new Date(),
+      },
+      {
+        name: "Electro Beats Society",
+        city: "Bordeaux",
+        phone: "+33 6 87 65 43 21",
+        mail: "electrobeats@example.com",
+        category: "Électro",
+        image: "",
+        description: "Pioneers of the underground electro music scene.",
+        createdAt: new Date(),
+      },
+      {
+        name: "Symphonic Dreams",
+        city: "Lille",
+        phone: "+33 6 55 44 33 22",
+        mail: "contact@symphonicdreams.com",
+        category: "Classique",
+        image: "",
+        description: "A symphony orchestra bringing dreams to life.",
+        createdAt: new Date(),
+      },
+      {
+        name: "The Blues Revolution",
+        city: "Nice",
+        phone: "+33 7 55 44 33 11",
+        mail: "bluesrev@gmail.com",
+        category: "Blues",
+        image: "",
+        description: "A soulful blues band with a rich, deep sound.",
+        createdAt: new Date(),
+      },
+      {
+        name: "Pop Vibes Crew",
+        city: "Toulouse",
+        phone: "+33 6 11 22 33 44",
+        mail: "info@popvibes.com",
+        category: "Pop",
+        image: "",
+        description: "Bringing catchy pop songs to the stage with energy.",
+        createdAt: new Date(),
+      },
+      {
+        name: "Rockin' Titans",
+        city: "Marseille",
+        phone: "+33 6 34 56 78 90",
+        mail: "rockintitans@music.com",
+        category: "Rock",
+        image: "",
+        description: "A legendary rock band with a powerful stage presence.",
+        createdAt: new Date(),
+      },
+      {
+        name: "Indie Voices",
+        city: "Strasbourg",
+        phone: "+33 7 66 77 88 99",
+        mail: "booking@indievoices.com",
+        category: "Indie",
+        image: "",
+        description: "An indie band known for their unique and fresh sound.",
+        createdAt: new Date(),
+      },
+      {
+        name: "Funky Groove Collective",
+        city: "Bordeaux",
+        phone: "+33 7 23 45 67 01",
+        mail: "funky@groove.com",
+        category: "Funk",
+        image: "",
+        description: "A funky group bringing grooves to life.",
+        createdAt: new Date(),
+      },
+    ],
+  });
 
+  console.log("Seed data inserted successfully!");
+}
 main()
   .catch((e) => console.error(e))
   .finally(() => prisma.$disconnect());
 
-/* await prisma.artists.createMany({
-    data: [
-      {
-        name: "The Electric Waves",
-        address: "12 Rue des Concerts, Paris",
-        phone: "+33 6 12 34 56 78",
-        mail: "contact@electricwaves.com",
-        category: "Rock",
-      },
-      {
-        name: "Jazz Fusion Collective",
-        address: "45 Avenue du Jazz, Lyon",
-        phone: "+33 7 98 76 54 32",
-        mail: "info@jazzfusioncollective.com",
-        category: "Jazz",
-      },
-      {
-        name: "Hip-Hop Syndicate",
-        address: "78 Boulevard du Flow, Marseille",
-        phone: "+33 6 23 45 67 89",
-        mail: "booking@hiphopsy.com",
-        category: "Hip-Hop",
-      },
-      {
-        name: "Electro Beats Society",
-        address: "3 Place du Son, Bordeaux",
-        phone: "+33 6 87 65 43 21",
-        mail: "electrobeats@example.com",
-        category: "Électro",
-      },
-      {
-        name: "Symphonic Dreams",
-        address: "99 Rue de la Symphonie, Lille",
-        phone: "+33 6 55 44 33 22",
-        mail: "contact@symphonicdreams.com",
-        category: "Classique",
-      },
-    ],
-  });
-  console.log("Seed data inserted successfully!");
-}*/
+/* */

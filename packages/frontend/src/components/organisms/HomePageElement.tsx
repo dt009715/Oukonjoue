@@ -64,7 +64,6 @@ const HomePageElement = () => {
         </p>
       </div>
 
-      {/* Institutions */}
       <div className="pt-8 px-8">
         <h1 className="font-semibold pb-6 text-2xl">Les Institutions</h1>
         <div className="flex sm:flex-col justify-center gap-10">

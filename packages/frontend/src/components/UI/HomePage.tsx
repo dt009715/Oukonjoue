@@ -4,9 +4,11 @@ import HomePageElement from "../organisms/HomePageElement";
 
 const Home = () => {
   return (
-    <div className="w-full h-full bg-background ">
+    <div className="w-full min-h-screen bg-background flex flex-col ">
       <Header />
-      <HomePageElement />
+      <div className="flex-1">
+        <HomePageElement />
+      </div>
       <Footer />
     </div>
   );

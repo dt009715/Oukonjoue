@@ -22,18 +22,20 @@ export const getArtistsByCategory = async (category: string) => {
 // Create a new artist
 export const createArtist = async (data: {
   name: string;
-  address: string;
   phone: string;
+  city: string;
   mail: string;
   category: string;
+  userId: number;
 }) => {
   return await prisma.artists.create({
     data: {
       name: data.name,
-      address: data.address,
       phone: data.phone,
       mail: data.mail,
       category: data.category,
+      city: data.city,
+      user: { connect: { id: data.userId } },
     },
   });
 };

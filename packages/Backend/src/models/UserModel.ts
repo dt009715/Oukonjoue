@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
-const bcrypt = require("bcrypt");
 
 export const registerUser = async (data: {
   email: string;
@@ -9,10 +9,10 @@ export const registerUser = async (data: {
   image?: string;
   role: "ARTISTS" | "INSTITUTIONS";
   name: string;
-  address?: string;
+  address: string;
   phone?: string;
-  mail?: string;
-  city?: string;
+  mail: string;
+  city: string;
   category?: string;
   description?: string;
 }) => {
@@ -43,7 +43,7 @@ export const registerUser = async (data: {
       await prisma.artists.create({
         data: {
           name: data.name,
-          address: data.address,
+          city: data.city,
           phone: data.phone,
           mail: data.mail,
           category: data.category ?? "Non spécifié",

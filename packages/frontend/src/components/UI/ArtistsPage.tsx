@@ -4,9 +4,11 @@ import Header from "../organisms/Header";
 
 const ArtistsPage = () => {
   return (
-    <div className="bg-background h-full">
+    <div className="bg-background min-h-screen flex flex-col">
       <Header />
-      <ArtistsPageElement />
+      <div className="flex-1">
+        <ArtistsPageElement />
+      </div>
       <Footer />
     </div>
   );

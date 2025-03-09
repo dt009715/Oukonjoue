@@ -36,9 +36,12 @@ const Cards = ({
         <strong className="pr-2">Téléphone :</strong>
         {phone}
       </p>
-      <p className="py-2">
-        <strong className="pr-2">Adresse :</strong> {address}
-      </p>
+      {type === "institutions" && (
+        <p className="py-2">
+          <strong className="pr-2">Adresse :</strong>{" "}
+          {address || "Non renseignée"}
+        </p>
+      )}
       <div className="mt-4 block text-center px-4 py-2 text-gray-600 bg-gray-200 rounded-lg shadow-md hover:bg-gray-300 ">
         <TextButton onClick={handleClick}> En Savoir Plus</TextButton>
       </div>

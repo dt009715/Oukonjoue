@@ -60,7 +60,7 @@ const ArtistsPageElement = () => {
             <FilterButton onClick={() => {}} />
           </div>
         </div>
-        <div className="grid pl-8 grid-cols-3 gap-10 justify-center">
+        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 upLg:grid-cols-4 gap-6 px-4">
           {cardDataList.map((cardData, index) => (
             <Cards
               key={index}
