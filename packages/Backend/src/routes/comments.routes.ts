@@ -4,20 +4,6 @@ import express, { Request, Response } from "express";
 const prisma = new PrismaClient();
 const router = express.Router();
 
-router.get("/:insitutionsId", async (req: Request, res: Response) => {
-  const { institutionId } = req.params;
-  try {
-    const comments = await prisma.comments.findMany({
-      where: { id: parseInt(institutionId) },
-    });
-    res.json(comments);
-  } catch (error) {
-    res
-      .status(500)
-      .json({ error: "Erreur lors de la récupération des commentaires." });
-  }
-});
-
 /*router.post("/", async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = getUserIdFromToken();

@@ -20,11 +20,10 @@ export const register = async (request: Request, response: Response) => {
   const validationSchema = z.object({
     email: z.string().email(),
     password: z.string().min(6),
-    name: z.string().min(3),
+    name: z.string(),
     image: z.string().optional(),
-    title: z.string().optional(),
     phone: z.string().optional(),
-    mail: z.string().optional(),
+    mail: z.string(),
     city: z.string().optional(),
     category: z.string().optional(),
     address: z.string().optional(),

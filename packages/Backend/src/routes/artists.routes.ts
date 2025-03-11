@@ -15,6 +15,6 @@ router.get("/", getArtists);
 router.get("/:id", getArtist);
 
 //[DELETE] http://loclahost:3001/deleteArtist/:id
-router.delete("/createArtist", deleteOneArtist);
+router.delete("/deleteArtist", deleteOneArtist);
 
 export default router;

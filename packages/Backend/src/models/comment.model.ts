@@ -38,35 +38,3 @@ export const deleteComment = async (id: string, userId: string) => {
     throw new Error("Impossible de supprimer le commentaire");
   }
 };
-
-//get a comment by id
-export const getCommentById = async (id: string) => {
-  try {
-    return await db.query.comment.findFirst({
-      where: eq(comment.id, id),
-      columns: {
-        id: true,
-        content: true,
-      },
-      with: {
-        post: {
-          columns: {
-            id: true,
-            title: true,
-          },
-        },
-        user: {
-          columns: {
-            id: true,
-            username: true,
-          },
-        },
-      },
-    });
-  } catch (err: any) {
-    logger.error(
-      `Erreur lors de la récupération du commentaire: ${err.message}`
-    );
-    throw new Error("Impossible de récupérer le commentaire");
-  }
-};

@@ -36,7 +36,7 @@ export const createInstitution = async (data: {
   return await prisma.institutions.create({ data });
 };
 
-//delet an institution
+//delete an institution
 export const deleteInstitution = async (id: string | number) => {
   return await prisma.institutions.delete({
     where: { id: Number(id) },
