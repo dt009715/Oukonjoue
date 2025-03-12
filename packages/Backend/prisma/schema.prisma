@@ -23,7 +23,7 @@ model Artists {
   id        Int      @id @default(autoincrement())
   name      String
   city String
-  phone     String?
+  phone     String
   mail      String
   category  String?
   image      String?
