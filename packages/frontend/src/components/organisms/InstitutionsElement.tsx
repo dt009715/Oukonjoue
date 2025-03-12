@@ -8,6 +8,7 @@ interface Institution {
   image: string;
   name: string;
   phone: string;
+  city: string;
   mail: string;
   address: string;
   category: string;
@@ -51,6 +52,7 @@ const InstitutionElement: React.FC = () => {
           mail: institution.mail || "Non disponible",
           address: institution.address || "Adresse inconnue",
           category: institution.category || "Genre inconnu",
+          city: institution.city,
           description: institution.description || "Aucune description",
           link: institution.id?.toString() || "#",
         }));
@@ -98,7 +100,7 @@ const InstitutionElement: React.FC = () => {
         : true;
 
       const matchCity = filters.city
-        ? institution.address.toLowerCase().includes(filters.city.toLowerCase())
+        ? institution.city.toLowerCase().includes(filters.city.toLowerCase())
         : true;
 
       return matchGenre && matchCity;
