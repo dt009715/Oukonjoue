@@ -102,44 +102,38 @@ const ArtistsPageElement = () => {
   if (error) return <p>Erreur : {error}</p>;
 
   return (
-    <div className="h-full">
-      <div className="h-full">
-        <div className="relative h-full flex w-full pt-10 items-center justify-between pb-8">
-          <h1 className="font-semibold text-3xl absolute left-1/2 transform -translate-x-1/2">
-            Artistes
-          </h1>
-          <div className="ml-auto pr-8">
-            <FilterButton onClick={() => setIsFilterOpen(true)} />
-          </div>
-        </div>
+    <main className="h-full pt-10 px-4 pb-8 space-y-8">
+      <header className="flex justify-between items-center">
+        <h1 className="font-semibold text-3xl mx-auto">Artistes</h1>
+        <FilterButton onClick={() => setIsFilterOpen(true)} />
+      </header>
 
-        <FilterItem
-          isOpen={isFilterOpen}
-          onClose={() => setIsFilterOpen(false)}
-          onApply={applyFilters}
-          filters={filters}
-          setFilters={setFilters}
-          title="Filtrer les Artistes"
-          categoryLabel="Genre"
-          categories={artistCategories}
-          cityLabel="Ville"
-          cities={artistCities}
-        />
+      <FilterItem
+        isOpen={isFilterOpen}
+        onClose={() => setIsFilterOpen(false)}
+        onApply={applyFilters}
+        filters={filters}
+        setFilters={setFilters}
+        title="Filtrer les Artistes"
+        categoryLabel="Genre"
+        categories={artistCategories}
+        cityLabel="Ville"
+        cities={artistCities}
+      />
 
-        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 upLg:grid-cols-4 gap-6 px-4">
-          {(filteredData.length > 0 ? filteredData : cardDataList).map(
-            (cardData, index) => (
-              <Cards
-                key={index}
-                {...cardData}
-                type="artistes"
-                id={cardData.link}
-              />
-            )
-          )}
-        </div>
-      </div>
-    </div>
+      <section className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 upLg:grid-cols-4 gap-6">
+        {(filteredData.length > 0 ? filteredData : cardDataList).map(
+          (cardData, index) => (
+            <Cards
+              key={index}
+              {...cardData}
+              type="artistes"
+              id={cardData.link}
+            />
+          )
+        )}
+      </section>
+    </main>
   );
 };
 

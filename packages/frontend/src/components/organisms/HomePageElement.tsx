@@ -55,65 +55,58 @@ const HomePageElement = () => {
   }
 
   return (
-    <div>
-      <div className="pt-10 px-8">
-        <h1 className="font-semibold pb-6 text-2xl">Objectif du site</h1>
-        <p className="text-justify ">
+    <main className="px-8">
+      <section className="pt-10" aria-labelledby="objectif-titre">
+        <h1 id="objectif-titre" className="font-semibold pb-6 text-2xl">
+          Objectif du site
+        </h1>
+        <p className="text-justify">
           Nous sommes Valentin et Diego, deux musiciens passionnés qui ont
           décidé de créer un site pour aider les groupes amateurs à trouver des
           lieux pour jouer et se faire connaître. Ayant nous-mêmes vécu les
           difficultés de trouver des concerts et des événements où jouer, nous
-          avons voulu simplifier cette recherche pour d’autres groupes en
-          offrant une plateforme où ils peuvent facilement trouver des salles de
-          concert, des bars, des festivals, et bien d’autres lieux prêts à
-          accueillir des artistes dans leur région. Notre objectif est de donner
-          aux groupes amateurs les moyens de se produire et d'augmenter leur
-          visibilité sans se soucier des barrières administratives ou
-          logistiques. Grâce à notre site, chaque groupe peut découvrir des
-          opportunités près de chez eux et ainsi se concentrer sur ce qui compte
-          vraiment : la musique. Nous croyons en la force de la scène locale et
-          voulons aider les artistes à se connecter, à grandir et à faire
-          entendre leur musique là où ils sont les plus susceptibles de toucher
-          leur public.
+          avons voulu simplifier cette recherche pour d’autres groupes...
         </p>
-      </div>
+      </section>
 
-      <div className="pt-8 px-8">
-        <h1 className="font-semibold pb-6 text-2xl">Les Institutions</h1>
+      <section className="pt-10" aria-labelledby="institutions-titre">
+        <h2 id="institutions-titre" className="font-semibold pb-6 text-2xl">
+          Les Institutions
+        </h2>
         <div className="flex sm:flex-col justify-center gap-10">
           {institutions.length > 0 ? (
             institutions.map((institution) => (
-              <Cards
-                key={institution.id}
-                {...institution}
-                type="institutions"
-                id={institution.id}
-              />
+              <article key={institution.id}>
+                <Cards
+                  {...institution}
+                  type="institutions"
+                  id={institution.id}
+                />
+              </article>
             ))
           ) : (
             <p>Aucune institution trouvée.</p>
           )}
         </div>
-      </div>
+      </section>
 
-      <div className="pt-8 px-8">
-        <h1 className="font-semibold pb-6 text-2xl">Les Artistes</h1>
+      <section className="pt-10" aria-labelledby="artistes-titre">
+        <h2 id="artistes-titre" className="font-semibold pb-6 text-2xl">
+          Les Artistes
+        </h2>
         <div className="flex sm:flex-col justify-center gap-10">
           {artists.length > 0 ? (
             artists.map((artist) => (
-              <Cards
-                key={artist.id}
-                {...artist}
-                type="artistes"
-                id={artist.id}
-              />
+              <article key={artist.id}>
+                <Cards {...artist} type="artistes" id={artist.id} />
+              </article>
             ))
           ) : (
             <p>Aucun artiste trouvé.</p>
           )}
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 };
 

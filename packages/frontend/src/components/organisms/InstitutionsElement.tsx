@@ -114,8 +114,8 @@ const InstitutionElement: React.FC = () => {
   if (error) return <p>Erreur : {error}</p>;
 
   return (
-    <div>
-      <div className="relative flex w-full pt-10 items-center justify-between pb-8">
+    <main>
+      <header className="relative flex w-full pt-10 items-center justify-between pb-8">
         <h1 className="font-semibold text-3xl absolute left-1/2 transform -translate-x-1/2">
           Institutions
         </h1>
@@ -123,7 +123,7 @@ const InstitutionElement: React.FC = () => {
         <div className="ml-auto pr-8">
           <FilterButton onClick={() => setIsFilterOpen(true)} />
         </div>
-      </div>
+      </header>
 
       <FilterItem
         isOpen={isFilterOpen}
@@ -138,7 +138,10 @@ const InstitutionElement: React.FC = () => {
         cities={institutionCities}
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 upLg:grid-cols-4 gap-6 px-4">
+      <section
+        aria-label="Liste des institutions"
+        className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 upLg:grid-cols-4 gap-6 px-4"
+      >
         {filteredData.map((cardData, index) => (
           <Cards
             key={index}
@@ -147,8 +150,8 @@ const InstitutionElement: React.FC = () => {
             id={cardData.link}
           />
         ))}
-      </div>
-    </div>
+      </section>
+    </main>
   );
 };
 

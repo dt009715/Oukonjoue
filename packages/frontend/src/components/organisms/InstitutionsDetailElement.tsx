@@ -104,7 +104,6 @@ const InstitutionDetailElement = ({
           throw new Error("Erreur lors de la suppression de l'institution.");
 
         alert("Institution supprimée avec succès.");
-
         window.location.href = "/";
       } catch (error) {
         console.error("Erreur:", error);
@@ -118,52 +117,74 @@ const InstitutionDetailElement = ({
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center p-6">
-      <div className="w-full max-w-4xl rounded-xl overflow-hidden shadow-lg">
+    <main className="min-h-screen bg-background flex flex-col items-center p-6">
+      <header className="w-full max-w-4xl rounded-xl overflow-hidden shadow-lg">
         <img
           src={institution.image || "/default-image.jpg"}
           alt={institution.name}
           className="w-full h-72 object-cover"
         />
-      </div>
+      </header>
 
-      <div className="bg-white w-full max-w-4xl p-6 rounded-xl shadow-md mt-6">
-        <h1 className="text-3xl font-bold text-gray-900">{institution.name}</h1>
+      <section
+        aria-labelledby="institution-infos"
+        className="bg-white w-full max-w-4xl p-6 rounded-xl shadow-md mt-6"
+      >
+        <h1 id="institution-infos" className="text-3xl font-bold text-gray-900">
+          {institution.name}
+        </h1>
         <p className="text-gray-600 text-lg">Genre : {institution.genre}</p>
-        <div className="mt-4 space-y-2">
+        <address className="mt-4 not-italic space-y-2">
           <p>
-            <span className="font-semibold">Téléphone :</span>{" "}
-            {institution.phone}
+            <strong>Téléphone :</strong> {institution.phone}
           </p>
           <p>
-            <span className="font-semibold">Adresse :</span>{" "}
-            {institution.address}
+            <strong>Adresse :</strong> {institution.address}
           </p>
           <p>
-            <span className="font-semibold">Mail :</span> {institution.mail}
+            <strong>Mail :</strong> {institution.mail}
           </p>
+        </address>
+        <article className="mt-4">
           <p>
-            <span className="font-semibold">Description :</span>{" "}
-            {institution.description}
+            <strong>Description :</strong> {institution.description}
           </p>
-        </div>
-      </div>
+        </article>
+      </section>
 
-      <div className="bg-white w-full max-w-4xl p-6 rounded-xl shadow-md mt-6">
-        <h2 className="text-2xl font-bold text-gray-900">Commentaires</h2>
+      <section
+        aria-labelledby="commentaires-titre"
+        className="bg-white w-full max-w-4xl p-6 rounded-xl shadow-md mt-6"
+      >
+        <h2
+          id="commentaires-titre"
+          className="text-2xl font-bold text-gray-900"
+        >
+          Commentaires
+        </h2>
+
         <div className="mt-4">
           {comments.length > 0 ? (
             comments.map((comment) => (
-              <div key={comment.id} className="p-2 border-b border-gray-300">
+              <article
+                key={comment.id}
+                className="p-2 border-b border-gray-300"
+              >
                 {comment.content}
-              </div>
+              </article>
             ))
           ) : (
             <p className="text-gray-500">Aucun commentaire pour le moment.</p>
           )}
         </div>
 
-        <div className="mt-4">
+        <form
+          className="mt-4"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleAddComment();
+          }}
+        >
           <textarea
             className="w-full p-2 border rounded-lg"
             placeholder="Ajoutez un commentaire..."
@@ -172,8 +193,8 @@ const InstitutionDetailElement = ({
             disabled={!isAuthenticated}
           />
           <button
+            type="submit"
             className="mt-2 px-4 py-2 bg-button text-white rounded-lg hover:bg-blue-700"
-            onClick={handleAddComment}
             disabled={!isAuthenticated}
           >
             Ajouter
@@ -183,15 +204,16 @@ const InstitutionDetailElement = ({
               Vous devez être connecté pour ajouter un commentaire.
             </p>
           )}
-        </div>
-      </div>
-      <div className="pt-4">
+        </form>
+      </section>
+
+      <footer className="pt-4">
         <Button
           children="supprimer mon compte"
           onClick={handleDeleteInstitution}
         />
-      </div>
-    </div>
+      </footer>
+    </main>
   );
 };
 

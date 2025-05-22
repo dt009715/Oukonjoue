@@ -13,20 +13,20 @@ const Footer = () => {
   };
 
   return (
-    <div className="w-full flex sm:pl-4 py-8">
-      <div className="w-1/2 flex items-center justify-center">
-        <TextButton
-          children="Politique des cookies"
-          onClick={handleCookiesClick}
-        />
-      </div>
-      <div className="w-1/2 flex items-center justify-center">
-        <TextButton
-          children="Mentions légales"
-          onClick={handleLegalMentionsClick}
-        />
-      </div>
-    </div>
+    <footer className="w-full flex sm:pl-4 py-8" role="contentinfo">
+      <nav className="w-full flex">
+        <div className="w-1/2 flex items-center justify-center">
+          <TextButton onClick={handleCookiesClick}>
+            Politique des cookies
+          </TextButton>
+        </div>
+        <div className="w-1/2 flex items-center justify-center">
+          <TextButton onClick={handleLegalMentionsClick}>
+            Mentions légales
+          </TextButton>
+        </div>
+      </nav>
+    </footer>
   );
 };
 

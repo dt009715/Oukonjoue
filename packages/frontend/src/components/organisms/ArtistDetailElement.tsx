@@ -65,35 +65,32 @@ const ArtistDetailElement = ({ artistId }: { artistId: number }) => {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center p-6">
-      <div className="w-full max-w-4xl rounded-xl overflow-hidden shadow-lg">
-        <img
-          src={artist.image || "/default-image.jpg"}
-          alt={artist.name}
-          className="w-full h-72 object-cover"
-        />
-      </div>
+    <main className="min-h-screen bg-background flex flex-col items-center p-6">
+      <img
+        src={artist.image || "/default-image.jpg"}
+        alt={artist.name}
+        className="w-full max-w-4xl h-72 object-cover rounded-xl shadow-lg"
+      />
 
-      <div className="bg-white w-full max-w-4xl p-6 rounded-xl shadow-md mt-6">
+      <section className="bg-white w-full max-w-4xl p-6 rounded-xl shadow-md mt-6">
         <h1 className="text-3xl font-bold text-gray-900">{artist.name}</h1>
         <p className="text-gray-600 text-lg">Genre : {artist.genre}</p>
-        <div className="mt-4 space-y-2">
-          <p>
-            <span className="font-semibold">Téléphone :</span> {artist.phone}
-          </p>
-          <p>
-            <span className="font-semibold">Adresse :</span> {artist.address}
-          </p>
-          <p>
-            <span className="font-semibold">Mail :</span> {artist.mail}
-          </p>
-          <p>
-            <span className="font-semibold">Description :</span>{" "}
-            {artist.description}
-          </p>
-        </div>
-      </div>
-    </div>
+        <ul className="mt-4 space-y-2 text-gray-700">
+          <li>
+            <strong>Téléphone :</strong> {artist.phone}
+          </li>
+          <li>
+            <strong>Adresse :</strong> {artist.address}
+          </li>
+          <li>
+            <strong>Mail :</strong> {artist.mail}
+          </li>
+          <li>
+            <strong>Description :</strong> {artist.description}
+          </li>
+        </ul>
+      </section>
+    </main>
   );
 };
 

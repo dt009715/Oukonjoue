@@ -2,13 +2,15 @@ import React from "react";
 
 const LegalMentionsElement: React.FC = () => {
   return (
-    <div className="max-w-4xl mx-auto px-6 py-12">
-      <h1 className="text-4xl font-bold text-center mb-8 text-gray-900">
-        Mentions Légales
-      </h1>
+    <main className="max-w-4xl mx-auto px-6 py-12">
+      <header>
+        <h1 className="text-4xl font-bold text-center mb-8 text-gray-900">
+          Mentions Légales
+        </h1>
+      </header>
 
-      <div className="space-y-6">
-        <div className="bg-gray-50 p-6 rounded-lg shadow-md">
+      <section className="space-y-6">
+        <article className="bg-gray-50 p-6 rounded-lg shadow-md">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">
             1. Identification
           </h2>
@@ -27,9 +29,9 @@ const LegalMentionsElement: React.FC = () => {
             <br />
             Ce site n'est pas une entreprise, il est édité à titre personnel.
           </p>
-        </div>
+        </article>
 
-        <div className="bg-gray-50 p-6 rounded-lg shadow-md">
+        <article className="bg-gray-50 p-6 rounded-lg shadow-md">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">
             2. Hébergeur du site
           </h2>
@@ -47,9 +49,9 @@ const LegalMentionsElement: React.FC = () => {
               support@hebergeur.com
             </a>
           </p>
-        </div>
+        </article>
 
-        <div className="bg-gray-50 p-6 rounded-lg shadow-md">
+        <article className="bg-gray-50 p-6 rounded-lg shadow-md">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">
             3. Cookies
           </h2>
@@ -64,9 +66,9 @@ const LegalMentionsElement: React.FC = () => {
             </a>
             .
           </p>
-        </div>
+        </article>
 
-        <div className="bg-gray-50 p-6 rounded-lg shadow-md">
+        <article className="bg-gray-50 p-6 rounded-lg shadow-md">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">
             4. Responsabilité
           </h2>
@@ -74,18 +76,18 @@ const LegalMentionsElement: React.FC = () => {
             L'éditeur du site ne peut être tenu responsable des erreurs ou des
             omissions dans le contenu présenté sur le site.
           </p>
-        </div>
+        </article>
 
-        <div className="bg-gray-50 p-6 rounded-lg shadow-md">
+        <article className="bg-gray-50 p-6 rounded-lg shadow-md">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">
             5. Loi applicable
           </h2>
           <p className="text-lg text-gray-700">
             Les présentes mentions légales sont régies par la loi française.
           </p>
-        </div>
-      </div>
-    </div>
+        </article>
+      </section>
+    </main>
   );
 };
 

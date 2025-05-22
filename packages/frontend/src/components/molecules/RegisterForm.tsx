@@ -12,10 +12,29 @@ const RegisterForm = () => {
     phone: "",
     email: "",
     city: "",
-    address: undefined,
+    address: "",
     category: "",
     description: "",
   });
+
+  const [errors, setErrors] = useState<any>({});
+
+  const validateForm = () => {
+    const newErrors: any = {};
+
+    if (!formData.name) newErrors.name = "Le nom est requis.";
+    if (!formData.password) newErrors.password = "Le mot de passe est requis.";
+    if (!formData.phone) newErrors.phone = "Le téléphone est requis.";
+    if (!formData.email) newErrors.email = "L'email est requis.";
+    if (!formData.city) newErrors.city = "La ville est requise.";
+    if (!formData.category) newErrors.category = "Le genre est requis.";
+    if (!formData.description)
+      newErrors.description = "La description est requise.";
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleChange = (event: any) => {
     const { name, value, files } = event.target;
@@ -44,7 +63,6 @@ const RegisterForm = () => {
         [name]: value,
       });
     }
-    console.log("Changement de champ :", name, "Nouvelle valeur :", value);
   };
 
   const handleTypeChange = (e: any) => {
@@ -52,8 +70,9 @@ const RegisterForm = () => {
   };
 
   const handleSubmit = async (e: any) => {
-    console.log("Bouton cliqué, handleSubmit exécuté");
     e.preventDefault();
+
+    if (!validateForm()) return;
 
     let imageUrl = undefined;
 
@@ -70,15 +89,12 @@ const RegisterForm = () => {
         if (response.ok) {
           const result = await response.json();
           imageUrl = result.imageUrl;
-          console.log("Image téléchargée avec succès :", imageUrl);
         } else {
           console.error("Erreur lors du téléchargement de l'image");
         }
       } catch (error) {
         console.error("Erreur de communication avec le serveur", error);
       }
-    } else {
-      console.log("Aucune image sélectionnée");
     }
 
     try {
@@ -99,9 +115,6 @@ const RegisterForm = () => {
         delete dataToSend.address;
       }
 
-      // Afficher les données avant l'envoi
-      console.log("Données envoyées : ", dataToSend);
-
       const response = await axios.post(url, dataToSend, {
         headers: { "Content-Type": "application/json" },
       });
@@ -114,36 +127,32 @@ const RegisterForm = () => {
       console.error("Erreur lors de l'envoi des données", error);
     }
   };
-  return (
-    <div className="max-w-3xl mx-auto p-6 border rounded-lg shadow-lg">
-      <h1 className="text-2xl font-semibold mb-4">Formulaire de Création</h1>
 
-      <div className="mb-4">
-        <label
-          htmlFor="typeSelect"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Que voulez-vous enregistrer :
-        </label>
-        <select
-          id="typeSelect"
-          value={type}
-          onChange={handleTypeChange}
-          className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-        >
-          <option value="INSTITUTIONS">Institution</option>
-          <option value="ARTISTS">Artiste</option>
-        </select>
-      </div>
+  return (
+    <section className="max-w-3xl mx-auto p-6 border rounded-lg shadow-lg">
+      <header>
+        <h1 className="text-2xl font-semibold mb-4">Formulaire de Création</h1>
+      </header>
 
       <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label
-            htmlFor="image"
-            className="block text-sm font-medium text-gray-700"
+        <fieldset className="mb-4">
+          <legend className="text-sm font-medium text-gray-700">
+            Que voulez-vous enregistrer :
+          </legend>
+          <select
+            id="typeSelect"
+            value={type}
+            onChange={handleTypeChange}
+            className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           >
-            Image :
-          </label>
+            <option value="INSTITUTIONS">Institution</option>
+            <option value="ARTISTS">Artiste</option>
+          </select>
+          {errors.type && <p className="text-red-500 text-sm">{errors.type}</p>}
+        </fieldset>
+
+        <fieldset className="mb-4">
+          <legend className="text-sm font-medium text-gray-700">Image :</legend>
           <input
             type="file"
             id="image"
@@ -152,11 +161,15 @@ const RegisterForm = () => {
             onChange={handleChange}
             className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           />
-        </div>
+        </fieldset>
 
-        <div className="mb-4">
+        <fieldset className="mb-4">
+          <legend className="text-sm font-medium text-gray-700">
+            Informations personnelles :
+          </legend>
+
           <label
-            htmlFor="title"
+            htmlFor="name"
             className="block text-sm font-medium text-gray-700"
           >
             Nom :
@@ -170,8 +183,8 @@ const RegisterForm = () => {
             onChange={handleChange}
             className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           />
-        </div>
-        <div className="mb-4">
+          {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
+
           <label
             htmlFor="password"
             className="block text-sm font-medium text-gray-700"
@@ -187,8 +200,10 @@ const RegisterForm = () => {
             onChange={handleChange}
             className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           />
-        </div>
-        <div className="mb-4">
+          {errors.password && (
+            <p className="text-red-500 text-sm">{errors.password}</p>
+          )}
+
           <label
             htmlFor="phone"
             className="block text-sm font-medium text-gray-700"
@@ -204,9 +219,10 @@ const RegisterForm = () => {
             onChange={handleChange}
             className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           />
-        </div>
+          {errors.phone && (
+            <p className="text-red-500 text-sm">{errors.phone}</p>
+          )}
 
-        <div className="mb-4">
           <label
             htmlFor="email"
             className="block text-sm font-medium text-gray-700"
@@ -217,14 +233,15 @@ const RegisterForm = () => {
             type="email"
             id="email"
             name="email"
-            placeholder="Entrez votre mail"
+            placeholder="Entrez votre email"
             value={formData.email}
             onChange={handleChange}
             className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           />
-        </div>
+          {errors.email && (
+            <p className="text-red-500 text-sm">{errors.email}</p>
+          )}
 
-        <div className="mb-4">
           <label
             htmlFor="city"
             className="block text-sm font-medium text-gray-700"
@@ -235,35 +252,38 @@ const RegisterForm = () => {
             type="text"
             id="city"
             name="city"
-            placeholder="Entrez la ville ou vous êtes situé"
+            placeholder="Entrez votre ville"
             value={formData.city}
             onChange={handleChange}
             className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           />
-        </div>
+          {errors.city && <p className="text-red-500 text-sm">{errors.city}</p>}
 
-        {type !== "ARTISTS" && (
-          <div className="mb-4">
-            <label
-              htmlFor="address"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Adresse :
-            </label>
-            <input
-              type="text"
-              id="address"
-              name="address"
-              placeholder="Entrez votre adresse"
-              value={formData.address}
-              onChange={handleChange}
-              className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-            />
-          </div>
-        )}
-        <div className="mb-4">
+          {type !== "ARTISTS" && (
+            <div className="mb-4">
+              <label
+                htmlFor="address"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Adresse :
+              </label>
+              <input
+                type="text"
+                id="address"
+                name="address"
+                placeholder="Entrez votre adresse"
+                value={formData.address}
+                onChange={handleChange}
+                className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+              {errors.address && (
+                <p className="text-red-500 text-sm">{errors.address}</p>
+              )}
+            </div>
+          )}
+
           <label
-            htmlFor="description"
+            htmlFor="category"
             className="block text-sm font-medium text-gray-700"
           >
             Genre :
@@ -281,9 +301,10 @@ const RegisterForm = () => {
             onChange={handleChange}
             className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           />
-        </div>
+          {errors.category && (
+            <p className="text-red-500 text-sm">{errors.category}</p>
+          )}
 
-        <div className="mb-4">
           <label
             htmlFor="description"
             className="block text-sm font-medium text-gray-700"
@@ -293,21 +314,24 @@ const RegisterForm = () => {
           <textarea
             id="description"
             name="description"
-            placeholder="Description de votre institutions"
+            placeholder="Description de votre institution"
             value={formData.description}
             onChange={handleChange}
             className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           />
-        </div>
+          {errors.description && (
+            <p className="text-red-500 text-sm">{errors.description}</p>
+          )}
+        </fieldset>
 
         <button
           type="submit"
-          className="w-full bg-button font-semibold text-white px-4 py-2 rounded-md shadow-sm  focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          className="w-full bg-button font-semibold text-white px-4 py-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
         >
           S'inscrire
         </button>
       </form>
-    </div>
+    </section>
   );
 };
 
