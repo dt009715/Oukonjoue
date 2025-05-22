@@ -104,8 +104,12 @@ const ArtistsPageElement = () => {
   return (
     <main className="h-full pt-10 px-4 pb-8 space-y-8">
       <header className="flex justify-between items-center">
-        <h1 className="font-semibold text-3xl mx-auto">Artistes</h1>
-        <FilterButton onClick={() => setIsFilterOpen(true)} />
+        <h1 className="font-semibold text-3xl absolute left-2/4 transform -translate-x-1/2">
+          Artistes
+        </h1>
+        <div className="ml-auto pr-8">
+          <FilterButton onClick={() => setIsFilterOpen(true)} />
+        </div>
       </header>
 
       <FilterItem
@@ -121,7 +125,7 @@ const ArtistsPageElement = () => {
         cities={artistCities}
       />
 
-      <section className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 upLg:grid-cols-4 gap-6">
+      <section className="custom-grid-section">
         {(filteredData.length > 0 ? filteredData : cardDataList).map(
           (cardData, index) => (
             <Cards

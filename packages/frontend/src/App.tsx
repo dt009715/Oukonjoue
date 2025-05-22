@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import "./App.scss";
 import ArtistDetailsPage from "./components/UI/ArtistDetailsPage";
 import ArtistsPage from "./components/UI/ArtistsPage";
 import Contact from "./components/UI/Contact";

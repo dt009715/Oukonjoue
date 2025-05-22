@@ -2,7 +2,7 @@ import ContactForm from "../molecules/FormContact";
 
 const ContactPageElement = () => {
   return (
-    <main className="relative flex flex-col w-full h-full pt-10 items-center justify-between pb-8">
+    <main className="relative flex flex-col w-full h-full items-center justify-center">
       <header>
         <h1 className="font-semibold text-3xl pb-2 text-center">Contact</h1>
       </header>

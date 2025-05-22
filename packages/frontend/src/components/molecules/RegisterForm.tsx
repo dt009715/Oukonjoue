@@ -30,6 +30,9 @@ const RegisterForm = () => {
     if (!formData.category) newErrors.category = "Le genre est requis.";
     if (!formData.description)
       newErrors.description = "La description est requise.";
+    if (type !== "ARTISTS" && !formData.address) {
+      newErrors.address = "L'adresse est requise.";
+    }
 
     setErrors(newErrors);
 
@@ -112,7 +115,7 @@ const RegisterForm = () => {
       }
 
       if (type === "ARTISTS") {
-        delete dataToSend.address;
+        dataToSend.address = "";
       }
 
       const response = await axios.post(url, dataToSend, {
@@ -129,7 +132,7 @@ const RegisterForm = () => {
   };
 
   return (
-    <section className="max-w-3xl mx-auto p-6 border rounded-lg shadow-lg">
+    <section className="full-page-form-section">
       <header>
         <h1 className="text-2xl font-semibold mb-4">Formulaire de Création</h1>
       </header>

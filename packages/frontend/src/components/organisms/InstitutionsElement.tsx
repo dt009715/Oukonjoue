@@ -138,10 +138,7 @@ const InstitutionElement: React.FC = () => {
         cities={institutionCities}
       />
 
-      <section
-        aria-label="Liste des institutions"
-        className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 upLg:grid-cols-4 gap-6 px-4"
-      >
+      <section className="custom-grid-section">
         {filteredData.map((cardData, index) => (
           <Cards
             key={index}

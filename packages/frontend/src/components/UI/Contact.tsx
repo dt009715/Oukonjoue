@@ -4,7 +4,7 @@ import Header from "../organisms/Header";
 
 const Contact = () => {
   return (
-    <div className="bg-background w-full min-h-screen flex flex-col">
+    <div className="bg-background  min-h-screen flex flex-col">
       <Header />
       <ContactPageElement />
       <Footer />
