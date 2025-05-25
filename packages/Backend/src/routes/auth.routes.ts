@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { logout, register } from "../controllers/auth.controller";
+import jwt from "jsonwebtoken";
+import * as authController from "../controllers/auth.controller";
 
 const router = Router();
 
@@ -7,17 +8,22 @@ const router = Router();
 router.post("/register", (req, res) => {
   console.log("Requête POST /register reçue !");
   console.log("Données reçues :", req.body);
-  register(req, res);
+  authController.register(req, res);
 });
 
 // [POST] http://localhost:3001/auth/login
 console.log("Route POST /login enregistrée !");
 router.post("/login", (req, res) => {
   console.log("Requête POST /login reçue !");
-  res.json({ message: "OK" });
+  authController.login;
 });
 
-// [POST] http://localhost:3001/auth/logout
-router.get("/logout", logout);
+router.get("/logout", authController.logout);
+
+router.get("/test-token", (req, res) => {
+  const token = jwt.sign({ id: 123 }, "secretkey", { expiresIn: "1h" });
+  console.log("Token envoyé:", token);
+  res.json({ token, message: "Test token" });
+});
 
 export default router;

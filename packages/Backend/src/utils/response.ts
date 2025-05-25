@@ -1,10 +1,16 @@
 import { Response } from "express";
 
-export const APIResponse = (
-  response: Response,
-  data: any,
-  message: string,
-  status: number = 200
-) => {
-  response.status(status).json({ data: data, message: message });
-};
+export function APIResponse(
+  res: Response,
+  data: any = null,
+  message = "",
+  status = 200,
+  extra: Record<string, any> = {}
+) {
+  return res.status(status).json({
+    success: status >= 200 && status < 300,
+    data,
+    message,
+    ...extra,
+  });
+}

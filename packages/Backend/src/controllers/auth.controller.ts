@@ -17,13 +17,13 @@ if (!JWT_SECRET) {
 }
 
 export const register = async (request: Request, response: Response) => {
+  console.log("Register appelé avec:", request.body);
   const validationSchema = z.object({
-    email: z.string().email(),
+    mail: z.string().email(),
     password: z.string().min(6),
     name: z.string(),
     image: z.string().optional(),
     phone: z.string().optional(),
-    mail: z.string(),
     city: z.string().optional(),
     category: z.string().optional(),
     address: z.string().optional(),
@@ -36,7 +36,7 @@ export const register = async (request: Request, response: Response) => {
     const data = validationSchema.parse(request.body);
 
     const existingUser = await prisma.user.findUnique({
-      where: { email: data.email },
+      where: { email: data.mail },
     });
 
     if (existingUser) {
@@ -44,9 +44,8 @@ export const register = async (request: Request, response: Response) => {
     }
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
-    const newUser = await registerUser({
+    await registerUser({
       name: data.name,
-      email: data.email,
       password: hashedPassword,
       image: data.image || "default.jpg",
       phone: data.phone || "Non disponible",
@@ -76,84 +75,38 @@ export const register = async (request: Request, response: Response) => {
   }
 };
 
-export const login = async (request: Request, response: Response) => {
-  console.log("Requête reçue pour /auth/login");
-  try {
-    const { mail, password } = request.body;
+export const login = async (req: Request, res: Response) => {
+  const { mail, password } = req.body;
 
-    console.log(`Mail: ${mail}, Password: ${password}`);
+  const user = await prisma.user.findUnique({
+    where: { email: mail },
+  });
 
-    const user = await prisma.user.findUnique({
-      where: { email: mail },
-    });
-
-    if (!user) {
-      console.log(`Utilisateur avec email ${mail} non trouvé.`);
-      return response.status(404).json({ message: "Utilisateur non trouvé" });
-    }
-
-    console.log(`Mot de passe récupéré dans la DB: ${user.password}`);
-
-    const passwordIsValid = await bcrypt.compare(password, user.password);
-    console.log(`Mot de passe comparé: ${passwordIsValid}`);
-
-    if (!passwordIsValid) {
-      console.log("Mot de passe incorrect.");
-      return response.status(400).json({ message: "Mot de passe incorrect" });
-    }
-
-    const accessToken = jwt.sign({ id: user.id }, JWT_SECRET, {
-      expiresIn: "1h",
-    });
-
-    response.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      sameSite: "strict",
-      secure: NODE_ENV === "production",
-    });
-
-    response
-      .status(200)
-      .json({ token: accessToken, message: "Vous êtes connecté" });
-  } catch (err: any) {
-    console.error(
-      `Erreur lors de la connexion de l'utilisateur: ${err.message}`
-    );
-    response.status(500).json({ message: "Erreur serveur" });
+  if (!user) {
+    return APIResponse(res, null, "Utilisateur non trouvé avec l'email", 401);
   }
+
+  const valid = await bcrypt.compare(password, user.password);
+  if (!valid) {
+    return APIResponse(res, null, "Email ou mot de passe incorrect", 401);
+  }
+  console.log("Mot de passe entré :", password);
+  console.log("Mot de passe en DB :", user.password);
+
+  const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: "1h" });
+
+  // 👇 Ajoute le cookie ici
+  res.cookie("accessToken", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 3600000, // 1h
+  });
+  console.log("login ok");
+  return APIResponse(res, null, "Vous êtes connecté", 200);
 };
+
 export const logout = (request: Request, response: Response) => {
   response.clearCookie("accessToken");
   APIResponse(response, null, "Vous êtes déconnecté", 200);
 };
-
-/*export const deleteUser = async (request: Request, response: Response) => {
-  const userId = request.params.id;  
-
-  try {
-    
-    const user = await prisma.user.findUnique({
-      where: { id: parseInt(userId) }, 
-    });
-
-    if (!user) {
-      return APIResponse(response, null, "Utilisateur non trouvé", 404);
-    }
-
-    
-
- 
-    await prisma.comment.deleteMany({
-      where: { userId: user.id },
-    });
-
-    await prisma.user.delete({
-      where: { id: user.id },
-    });
-
-    return APIResponse(response, null, "Utilisateur et ses données supprimées avec succès", 200);
-  } catch (err: any) {
-    console.error(`Erreur lors de la suppression de l'utilisateur: ${err.message}`);
-    return APIResponse(response, null, "Erreur serveur", 500);
-  }
-};*/

@@ -4,7 +4,6 @@ import bcrypt from "bcrypt";
 const prisma = new PrismaClient();
 
 export const registerUser = async (data: {
-  email: string;
   password: string;
   image?: string;
   role: "ARTISTS" | "INSTITUTIONS";
@@ -19,7 +18,7 @@ export const registerUser = async (data: {
   try {
     // mail checking
     const existingUser = await prisma.user.findUnique({
-      where: { email: data.email },
+      where: { email: data.mail },
     });
 
     if (existingUser) {
@@ -32,7 +31,7 @@ export const registerUser = async (data: {
     // create User
     const newUser = await prisma.user.create({
       data: {
-        email: data.email,
+        email: data.mail,
         password: hashedPassword,
         role: data.role,
       },
