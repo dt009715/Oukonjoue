@@ -3,13 +3,10 @@ import ContactForm from "../molecules/FormContact";
 const ContactPageElement = () => {
   return (
     <main className="relative flex flex-col w-full h-full items-center justify-center">
-      <header>
-        <h1 className="font-semibold text-3xl pb-2 text-center">Contact</h1>
-      </header>
+      <h2 id="contact-form" className="sr-only">
+        Formulaire de contact
+      </h2>
       <section aria-labelledby="contact-form">
-        <h2 id="contact-form" className="sr-only">
-          Formulaire de contact
-        </h2>
         <ContactForm />
       </section>
     </main>

@@ -46,3 +46,21 @@ export const deleteArtist = async (id: string) => {
     where: { id: Number(id) },
   });
 };
+
+export const updateArtistById = async (
+  id: string,
+  updatedData: {
+    name?: string;
+    phone?: string;
+    city?: string;
+    mail?: string;
+    category?: string;
+    description?: string;
+    image?: string;
+  }
+) => {
+  return await prisma.artists.update({
+    where: { id: Number(id) },
+    data: updatedData,
+  });
+};

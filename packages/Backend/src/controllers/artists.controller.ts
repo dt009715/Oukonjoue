@@ -5,6 +5,7 @@ import {
   getAllArtists,
   getArtistById,
   getArtistsByCategory,
+  updateArtistById,
 } from "../models/artist.model";
 
 export const getArtists = async (
@@ -98,6 +99,34 @@ export const deleteOneArtist = async (
     const err = error as Error;
     res.status(500).json({
       message: "Erreur lors de la suppression de l'artiste",
+      error: err.message,
+    });
+  }
+};
+
+export const updateArtist = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const artistId = req.params.id;
+    const updatedData = req.body;
+
+    const updatedArtist = await updateArtistById(artistId, updatedData);
+
+    if (!updatedArtist) {
+      res.status(404).json({ message: "Artiste non trouvé" });
+      return;
+    }
+
+    res
+      .status(200)
+      .json({ message: "Artiste mis à jour", artist: updatedArtist });
+  } catch (error) {
+    console.error("Erreur serveur:", error);
+    const err = error as Error;
+    res.status(500).json({
+      message: "Erreur lors de la mise à jour de l'artiste",
       error: err.message,
     });
   }

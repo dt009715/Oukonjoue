@@ -95,12 +95,11 @@ export const login = async (req: Request, res: Response) => {
 
   const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: "1h" });
 
-  // 👇 Ajoute le cookie ici
   res.cookie("accessToken", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
-    maxAge: 3600000, // 1h
+    maxAge: 3600000,
   });
   console.log("login ok");
   return APIResponse(res, null, "Vous êtes connecté", 200);
@@ -110,3 +109,41 @@ export const logout = (request: Request, response: Response) => {
   response.clearCookie("accessToken");
   APIResponse(response, null, "Vous êtes déconnecté", 200);
 };
+
+/*export const deleteUser = async (req: Request, res: Response) => {
+  try {
+    const token = req.cookies.accessToken;
+
+    if (!token) {
+      return APIResponse(res, null, "Non autorisé, token manquant", 401);
+    }
+
+    let decodedToken;
+    try {
+      decodedToken = jwt.verify(token, JWT_SECRET);
+    } catch (err) {
+      return APIResponse(res, null, "Token invalide", 401);
+    }
+
+    const userId = (decodedToken as { id: string }).id;
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      return APIResponse(res, null, "Utilisateur non trouvé", 404);
+    }
+
+    await prisma.user.delete({
+      where: { id: userId },
+    });
+
+    response.clearCookie("accessToken");
+
+    return APIResponse(res, null, "Utilisateur supprimé avec succès", 200);
+  } catch (err: any) {
+    logger.error(`Erreur lors de la suppression de l'utilisateur: ${err.message}`);
+    return APIResponse(res, null, "Erreur serveur", 500);
+  }
+};*/

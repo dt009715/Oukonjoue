@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Button from "../atoms/Button";
 
 const API_URL = "http://localhost:3001/artistes";
 
@@ -13,29 +14,16 @@ interface Artist {
   image: string;
 }
 
-interface Comment {
-  id: number;
-  content: string;
-}
-
 const ArtistDetailElement = ({ artistId }: { artistId: number }) => {
   const [artist, setArtist] = useState<Artist | null>(null);
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [newComment, setNewComment] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedArtist, setEditedArtist] = useState<Partial<Artist>>({});
 
   useEffect(() => {
     if (artistId) {
       fetchArtistDetails();
-      fetchComments();
-      checkAuthentication();
     }
   }, [artistId]);
-
-  const checkAuthentication = () => {
-    const token = localStorage.getItem("authToken");
-    setIsAuthenticated(!!token);
-  };
 
   const fetchArtistDetails = async () => {
     try {
@@ -48,21 +36,52 @@ const ArtistDetailElement = ({ artistId }: { artistId: number }) => {
     }
   };
 
-  const fetchComments = async () => {
+  const handleDeleteArtist = async () => {
+    if (window.confirm("Êtes-vous sûr de vouloir supprimer cet artiste ?")) {
+      try {
+        const response = await fetch(`${API_URL}/deleteartist/${artistId}`, {
+          method: "DELETE",
+        });
+
+        if (!response.ok)
+          throw new Error("Erreur lors de la suppression de l'artiste.");
+
+        alert("Artiste supprimé avec succès.");
+        window.location.href = "/";
+      } catch (error) {
+        console.error("Erreur:", error);
+        alert("Une erreur est survenue lors de la suppression.");
+      }
+    }
+  };
+
+  const handleUpdateSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     try {
-      const response = await fetch(`${API_URL}/comments/${artistId}`);
-      if (!response.ok)
-        throw new Error("Erreur lors du chargement des commentaires.");
-      const data = await response.json();
-      setComments(data);
+      const response = await fetch(`${API_URL}/updateartist/${artistId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(editedArtist),
+      });
+
+      if (!response.ok) throw new Error("Erreur lors de la mise à jour.");
+
+      alert("Artiste mis à jour !");
+      setIsEditing(false);
+      fetchArtistDetails();
     } catch (error) {
       console.error("Erreur:", error);
+      alert("Erreur lors de la mise à jour.");
     }
   };
 
   if (!artist) {
     return <p>Chargement des détails de l'artiste...</p>;
   }
+
+  console.log("isEditing", isEditing);
 
   return (
     <main className="min-h-screen bg-background flex flex-col items-center p-6">
@@ -90,6 +109,94 @@ const ArtistDetailElement = ({ artistId }: { artistId: number }) => {
           </li>
         </ul>
       </section>
+
+      <div className="flex gap-4 mt-6">
+        <Button type="button" onClick={handleDeleteArtist}>
+          Supprimer mon compte
+        </Button>
+
+        {!isEditing && (
+          <Button
+            type="button"
+            onClick={() => {
+              setEditedArtist(artist);
+              setIsEditing(true);
+            }}
+          >
+            Modifier mes infos
+          </Button>
+        )}
+      </div>
+
+      {isEditing && (
+        <form
+          onSubmit={handleUpdateSubmit}
+          className="mt-6 space-y-4 w-full max-w-2xl bg-white p-6 rounded-lg shadow"
+        >
+          <input
+            type="text"
+            placeholder="Nom"
+            value={editedArtist.name || ""}
+            onChange={(e) =>
+              setEditedArtist({ ...editedArtist, name: e.target.value })
+            }
+            className="w-full p-2 border rounded"
+          />
+          <input
+            type="text"
+            placeholder="Genre"
+            value={editedArtist.genre || ""}
+            onChange={(e) =>
+              setEditedArtist({ ...editedArtist, genre: e.target.value })
+            }
+            className="w-full p-2 border rounded"
+          />
+          <input
+            type="text"
+            placeholder="Téléphone"
+            value={editedArtist.phone || ""}
+            onChange={(e) =>
+              setEditedArtist({ ...editedArtist, phone: e.target.value })
+            }
+            className="w-full p-2 border rounded"
+          />
+          <input
+            type="text"
+            placeholder="Adresse"
+            value={editedArtist.address || ""}
+            onChange={(e) =>
+              setEditedArtist({ ...editedArtist, address: e.target.value })
+            }
+            className="w-full p-2 border rounded"
+          />
+          <input
+            type="email"
+            placeholder="Mail"
+            value={editedArtist.mail || ""}
+            onChange={(e) =>
+              setEditedArtist({ ...editedArtist, mail: e.target.value })
+            }
+            className="w-full p-2 border rounded"
+          />
+          <textarea
+            placeholder="Description"
+            value={editedArtist.description || ""}
+            onChange={(e) =>
+              setEditedArtist({
+                ...editedArtist,
+                description: e.target.value,
+              })
+            }
+            className="w-full p-2 border rounded"
+          />
+          <div className="flex gap-4">
+            <Button type="submit">Enregistrer</Button>
+            <Button type="button" onClick={() => setIsEditing(false)}>
+              Annuler
+            </Button>
+          </div>
+        </form>
+      )}
     </main>
   );
 };

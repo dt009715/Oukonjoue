@@ -96,7 +96,7 @@ const InstitutionDetailElement = ({
       window.confirm("Êtes-vous sûr de vouloir supprimer cette institution ?")
     ) {
       try {
-        const response = await fetch(`${API_URL}/${institutionId}`, {
+        const response = await fetch(`${API_URL}/deleteinst/${institutionId}`, {
           method: "DELETE",
         });
 
