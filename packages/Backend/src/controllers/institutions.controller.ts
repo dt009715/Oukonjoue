@@ -5,6 +5,7 @@ import {
   getAllInstitutions,
   getInstitution,
   getInstitutionByCategory,
+  updateInstitution,
 } from "../models/institution.model";
 
 export const getInstitutions = async (
@@ -115,6 +116,37 @@ export const deleteOneInstitution = async (
         : "Une erreur inconnue s'est produite";
     res.status(500).json({
       message: "Erreur lors de la suppression de l'institution",
+      error: errorMessage,
+    });
+  }
+};
+
+export const updateOneInstitution = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const id = req.params.id;
+  const updatedData = req.body;
+
+  try {
+    const updatedInstitution = await updateInstitution(id, updatedData);
+
+    if (!updatedInstitution) {
+      res.status(404).json({ message: "Institution non trouvée" });
+      return;
+    }
+
+    res.json(updatedInstitution);
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour :", error);
+
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "Une erreur inconnue s'est produite";
+
+    res.status(500).json({
+      message: "Erreur lors de la mise à jour de l'institution",
       error: errorMessage,
     });
   }

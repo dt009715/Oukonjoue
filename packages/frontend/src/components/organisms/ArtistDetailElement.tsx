@@ -110,23 +110,28 @@ const ArtistDetailElement = ({ artistId }: { artistId: number }) => {
         </ul>
       </section>
 
-      <div className="flex gap-4 mt-6">
-        <Button type="button" onClick={handleDeleteArtist}>
-          Supprimer mon compte
-        </Button>
-
-        {!isEditing && (
+      <section className="pt-4 flex justify-center">
+        <section className="flex gap-4 w-full max-w-md  h-12">
           <Button
             type="button"
-            onClick={() => {
-              setEditedArtist(artist);
-              setIsEditing(true);
-            }}
-          >
-            Modifier mes infos
-          </Button>
-        )}
-      </div>
+            children="Supprimer l'artiste"
+            onClick={handleDeleteArtist}
+            className="w-1/2"
+          ></Button>
+
+          {!isEditing && (
+            <Button
+              type="button"
+              children="modifier mes informations"
+              onClick={() => {
+                setEditedArtist(artist);
+                setIsEditing(true);
+              }}
+              className="w-1/2"
+            />
+          )}
+        </section>
+      </section>
 
       {isEditing && (
         <form

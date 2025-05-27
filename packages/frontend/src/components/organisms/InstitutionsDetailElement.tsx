@@ -29,6 +29,12 @@ const InstitutionDetailElement = ({
   const [newComment, setNewComment] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  // Nouveaux états pour l'édition
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedInstitution, setEditedInstitution] = useState<
+    Partial<Institution>
+  >({});
+
   useEffect(() => {
     if (institutionId) {
       fetchInstitutionIdDetails();
@@ -112,6 +118,29 @@ const InstitutionDetailElement = ({
     }
   };
 
+  // --- Nouvelle fonction de gestion de la soumission de la mise à jour ---
+  const handleUpdateSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`${API_URL}/updateinst/${institutionId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(editedInstitution),
+      });
+
+      if (!response.ok) throw new Error("Erreur lors de la mise à jour.");
+
+      alert("Institution mise à jour !");
+      setIsEditing(false);
+      fetchInstitutionIdDetails(); // Recharge les données à jour
+    } catch (error) {
+      console.error("Erreur:", error);
+      alert("Erreur lors de la mise à jour.");
+    }
+  };
+
   if (!institution) {
     return <p>Chargement des détails de l'institution...</p>;
   }
@@ -130,26 +159,113 @@ const InstitutionDetailElement = ({
         aria-labelledby="institution-infos"
         className="bg-white w-full max-w-4xl p-6 rounded-xl shadow-md mt-6"
       >
-        <h1 id="institution-infos" className="text-3xl font-bold text-gray-900">
-          {institution.name}
-        </h1>
-        <p className="text-gray-600 text-lg">Genre : {institution.genre}</p>
-        <address className="mt-4 not-italic space-y-2">
-          <p>
-            <strong>Téléphone :</strong> {institution.phone}
-          </p>
-          <p>
-            <strong>Adresse :</strong> {institution.address}
-          </p>
-          <p>
-            <strong>Mail :</strong> {institution.mail}
-          </p>
-        </address>
-        <article className="mt-4">
-          <p>
-            <strong>Description :</strong> {institution.description}
-          </p>
-        </article>
+        {!isEditing ? (
+          <>
+            <h1
+              id="institution-infos"
+              className="text-3xl font-bold text-gray-900"
+            >
+              {institution.name}
+            </h1>
+            <p className="text-gray-600 text-lg">Genre : {institution.genre}</p>
+            <address className="mt-4 not-italic space-y-2">
+              <p>
+                <strong>Téléphone :</strong> {institution.phone}
+              </p>
+              <p>
+                <strong>Adresse :</strong> {institution.address}
+              </p>
+              <p>
+                <strong>Mail :</strong> {institution.mail}
+              </p>
+            </address>
+            <article className="mt-4">
+              <p>
+                <strong>Description :</strong> {institution.description}
+              </p>
+            </article>
+          </>
+        ) : (
+          <form onSubmit={handleUpdateSubmit} className="space-y-4">
+            <input
+              type="text"
+              placeholder="Nom"
+              value={editedInstitution.name ?? institution.name}
+              onChange={(e) =>
+                setEditedInstitution({
+                  ...editedInstitution,
+                  name: e.target.value,
+                })
+              }
+              className="w-full p-2 border rounded"
+            />
+            <input
+              type="text"
+              placeholder="Genre"
+              value={editedInstitution.genre ?? institution.genre}
+              onChange={(e) =>
+                setEditedInstitution({
+                  ...editedInstitution,
+                  genre: e.target.value,
+                })
+              }
+              className="w-full p-2 border rounded"
+            />
+            <input
+              type="text"
+              placeholder="Téléphone"
+              value={editedInstitution.phone ?? institution.phone}
+              onChange={(e) =>
+                setEditedInstitution({
+                  ...editedInstitution,
+                  phone: e.target.value,
+                })
+              }
+              className="w-full p-2 border rounded"
+            />
+            <input
+              type="text"
+              placeholder="Adresse"
+              value={editedInstitution.address ?? institution.address}
+              onChange={(e) =>
+                setEditedInstitution({
+                  ...editedInstitution,
+                  address: e.target.value,
+                })
+              }
+              className="w-full p-2 border rounded"
+            />
+            <input
+              type="email"
+              placeholder="Mail"
+              value={editedInstitution.mail ?? institution.mail}
+              onChange={(e) =>
+                setEditedInstitution({
+                  ...editedInstitution,
+                  mail: e.target.value,
+                })
+              }
+              className="w-full p-2 border rounded"
+            />
+            <textarea
+              placeholder="Description"
+              value={editedInstitution.description ?? institution.description}
+              onChange={(e) =>
+                setEditedInstitution({
+                  ...editedInstitution,
+                  description: e.target.value,
+                })
+              }
+              className="w-full p-2 border rounded"
+            />
+            <div className="flex gap-4">
+              <Button type="submit">Enregistrer</Button>
+              <Button type="button" onClick={() => setIsEditing(false)}>
+                Annuler
+              </Button>
+            </div>
+          </form>
+        )}
       </section>
 
       <section
@@ -207,12 +323,24 @@ const InstitutionDetailElement = ({
         </form>
       </section>
 
-      <footer className="pt-4">
-        <Button
-          children="supprimer mon compte"
-          onClick={handleDeleteInstitution}
-        />
-      </footer>
+      <section className="pt-4 flex justify-center">
+        {!isEditing && (
+          <section className="flex gap-4 w-full max-w-md  h-12">
+            <Button
+              className="w-1/2 "
+              onClick={() => {
+                setEditedInstitution(institution);
+                setIsEditing(true);
+              }}
+            >
+              Modifier mes infos
+            </Button>
+            <Button className="w-1/2" onClick={handleDeleteInstitution}>
+              Supprimer l'institution
+            </Button>
+          </section>
+        )}
+      </section>
     </main>
   );
 };

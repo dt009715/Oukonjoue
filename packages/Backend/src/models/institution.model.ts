@@ -42,3 +42,21 @@ export const deleteInstitution = async (id: string | number) => {
     where: { id: Number(id) },
   });
 };
+
+export const updateInstitution = async (
+  id: string | number,
+  data: {
+    name?: string;
+    city?: string;
+    address?: string;
+    phone?: string;
+    mail?: string;
+    category?: string;
+    description?: string;
+  }
+) => {
+  return await prisma.institutions.update({
+    where: { id: Number(id) },
+    data,
+  });
+};

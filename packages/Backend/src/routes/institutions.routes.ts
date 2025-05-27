@@ -3,6 +3,7 @@ import {
   deleteOneInstitution,
   getInstitutionById,
   getInstitutions,
+  updateOneInstitution,
 } from "../controllers/institutions.controller";
 
 const router = Router();
@@ -16,4 +17,6 @@ router.get("/:id", getInstitutionById);
 // [DELETE] http://localhost:3001/institutions/deleteinst/:id
 router.delete("/deleteinst/:id", deleteOneInstitution);
 
+//[PUT] http://loclahost:3001/updateartist/:id
+router.put("/updateinst/:id", updateOneInstitution);
 export default router;
