@@ -33,7 +33,11 @@ const Cards = ({
       className="p-4 rounded-lg shadow-md w-full max-w-md"
       aria-labelledby={`card-title-${id}`}
     >
-      <img src="/images/imageRodia.png" alt={`Image de ${name}`} />
+      <img
+        src="/images/imageRodia.png"
+        alt={`Image de ${name}`}
+        className="rounded-xl"
+      />
 
       <header>
         <h2 id={`card-title-${id}`} className="font-bold text-lg pt-8 pb-2">
