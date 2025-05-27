@@ -118,7 +118,6 @@ const InstitutionDetailElement = ({
     }
   };
 
-  // --- Nouvelle fonction de gestion de la soumission de la mise à jour ---
   const handleUpdateSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -134,7 +133,7 @@ const InstitutionDetailElement = ({
 
       alert("Institution mise à jour !");
       setIsEditing(false);
-      fetchInstitutionIdDetails(); // Recharge les données à jour
+      fetchInstitutionIdDetails();
     } catch (error) {
       console.error("Erreur:", error);
       alert("Erreur lors de la mise à jour.");
@@ -148,10 +147,15 @@ const InstitutionDetailElement = ({
   return (
     <main className="min-h-screen bg-background flex flex-col items-center p-6">
       <header className="w-full max-w-4xl rounded-xl overflow-hidden shadow-lg">
-        <img
+        {/*<img
           src={institution.image || "/default-image.jpg"}
           alt={institution.name}
           className="w-full h-72 object-cover"
+        />*/}
+        <img
+          src="/images/imageRodia.png"
+          alt={`Image de la rodia`}
+          className="w-25 rounded-lg border border-gray-300 shadow-sm"
         />
       </header>
 

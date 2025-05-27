@@ -85,11 +85,18 @@ const ArtistDetailElement = ({ artistId }: { artistId: number }) => {
 
   return (
     <main className="min-h-screen bg-background flex flex-col items-center p-6">
-      <img
-        src={artist.image || "/default-image.jpg"}
-        alt={artist.name}
-        className="w-full max-w-4xl h-72 object-cover rounded-xl shadow-lg"
-      />
+      <header className="w-full max-w-4xl rounded-xl overflow-hidden shadow-lg">
+        {/*<img
+    src={artist.image || "/default-image.jpg"}
+    alt={artist.name}
+    className="w-full max-w-4xl h-72 object-cover rounded-xl shadow-lg"
+  />*/}
+        <img
+          src="/images/imageRodia.png"
+          alt="Image de la Rodia"
+          className="w-25 rounded-lg border border-gray-300 shadow-sm mx-auto"
+        />
+      </header>
 
       <section className="bg-white w-full max-w-4xl p-6 rounded-xl shadow-md mt-6">
         <h1 className="text-3xl font-bold text-gray-900">{artist.name}</h1>
