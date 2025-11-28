@@ -23,7 +23,26 @@
     "dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:ci": "react-scripts test --coverage --watchAll=false",
     "eject": "react-scripts eject"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/App.tsx",
+      "src/components/molecules/FormContact.tsx",
+      "src/components/organisms/Header.tsx"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!react-router-dom|react-router)"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 70,
+        "functions": 70,
+        "lines": 70,
+        "statements": 70
+      }
+    }
   },
   "eslintConfig": {
     "extends": [

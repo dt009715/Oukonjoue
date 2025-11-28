@@ -32,3 +32,19 @@ npm install
 Pour démarrer le serveur de développement, utilisez la commande suivante :
 
 npm run dev
+
+## Tests
+
+Ce dépôt est organisé en monorepo `pnpm`. Après installation des dépendances à la racine, les commandes suivantes sont disponibles :
+
+- `pnpm test:frontend` : lance les tests unitaires du client React situé dans `packages/frontend`.
+- `pnpm test:backend` : lance les tests unitaires du serveur Express dans `packages/Backend`.
+- `pnpm test` : exécute successivement les suites frontend et backend pour vérifier la cohérence globale.
+
+Chaque script peut être utilisé localement ou dans un pipeline CI pour automatiser les vérifications.
+
+### Mode CI et couverture
+
+- `pnpm --filter frontend run test:ci` exécute la suite React en mode headless avec collecte de couverture (>70 % sur `App`, `Header`, `FormContact`).
+- `pnpm --filter backend run test:ci` lance Jest côté API avec `ts-jest` et un seuil global de 60 %.
+- Le workflow GitHub Actions `ci.yml` (jobs `frontend`, `backend`, `deploy`) est déclenché sur chaque push/PR et bloque les branches tant que les tests échouent. Le job `deploy` sert de placeholder à adapter (Docker, Vercel, etc.) et cible l’environnement `production`.
