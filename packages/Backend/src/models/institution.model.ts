@@ -1,33 +1,29 @@
-import { getDataSource } from "../config/database";
-import { Institution } from "../entities/Institution";
+import { PrismaClient } from "@prisma/client";
 
-// Get all institutions
+const prisma = new PrismaClient();
+
+console.log(Object.keys(prisma));
+
+// get all institutions
 export const getAllInstitutions = async () => {
-  const institutionRepository = getDataSource().getRepository(Institution);
-  return await institutionRepository.find({
-    relations: ["category", "user"],
+  return await prisma.institutions.findMany();
+};
+
+//get an insitution
+export const getInstitution = async (id: string | number) => {
+  return await prisma.institutions.findUnique({
+    where: { id: Number(id) },
   });
 };
 
-// Get an institution
-export const getInstitution = async (id: string) => {
-  const institutionRepository = getDataSource().getRepository(Institution);
-  return await institutionRepository.findOne({
-    where: { id },
-    relations: ["category", "user"],
-  });
-};
-
-// Get institutions by category
+//get insitutions by category
 export const getInstitutionByCategory = async (category: string) => {
-  const institutionRepository = getDataSource().getRepository(Institution);
-  return await institutionRepository.find({
-    where: { category: { name: category } },
-    relations: ["category", "user"],
+  return await prisma.institutions.findMany({
+    where: { category },
   });
 };
 
-// Create an institution
+//create an institution
 export const createInstitution = async (data: {
   name: string;
   city: string;
@@ -37,21 +33,18 @@ export const createInstitution = async (data: {
   category: string;
   description: string;
 }) => {
-  const institutionRepository = getDataSource().getRepository(Institution);
-  const newInstitution = institutionRepository.create(data);
-  return await institutionRepository.save(newInstitution);
+  return await prisma.institutions.create({ data });
 };
 
-// Delete an institution
-export const deleteInstitution = async (id: string) => {
-  const institutionRepository = getDataSource().getRepository(Institution);
-  return await institutionRepository.remove(
-    await institutionRepository.findOneOrFail({ where: { id } })
-  );
+//delete an institution
+export const deleteInstitution = async (id: string | number) => {
+  return await prisma.institutions.delete({
+    where: { id: Number(id) },
+  });
 };
 
 export const updateInstitution = async (
-  id: string,
+  id: string | number,
   data: {
     name?: string;
     city?: string;
@@ -62,11 +55,8 @@ export const updateInstitution = async (
     description?: string;
   }
 ) => {
-  const institutionRepository = getDataSource().getRepository(Institution);
-  const institution = await institutionRepository.findOneOrFail({
-    where: { id },
+  return await prisma.institutions.update({
+    where: { id: Number(id) },
+    data,
   });
-
-  Object.assign(institution, data);
-  return await institutionRepository.save(institution);
 };

@@ -1,20 +1,39 @@
-import express from "express";
-import {
-  getCommentsByInstitution,
-  addComment,
-  deleteComment,
-} from "../controllers/comments.controller";
-import { authMiddleware } from "../middlewares/auth.middleware";
+import { PrismaClient } from "@prisma/client";
+import express, { Request, Response } from "express";
 
+const prisma = new PrismaClient();
 const router = express.Router();
 
-// GET /api/comments/:institutionId - Get comments for an institution
-router.get("/:institutionId", getCommentsByInstitution);
+/*router.post("/", async (req: Request, res: Response): Promise<void> => {
+  try {
+    const userId = getUserIdFromToken();
+    const { institutionId, content } = req.body;
 
-// POST /api/comments - Add a new comment (requires auth)
-router.post("/", authMiddleware, addComment);
+    const comment = await prisma.comments.create({
+      data: {
+        content: content,
+        userId: userId,
+        institutionId: institutionId,
+      },
+    });
 
-// DELETE /api/comments/:id - Delete a comment (requires auth)
-router.delete("/:id", authMiddleware, deleteComment);
+    res.status(201).json(comment);
+  } catch (error) {
+    console.error("Erreur lors de l’ajout du commentaire:", error);
+    res.status(500).json({ error: "Erreur lors de l’ajout du commentaire." });
+  }
+});*/
+
+router.delete("/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    await prisma.comments.delete({
+      where: { id: parseInt(id) },
+    });
+    res.json({ message: "Commentaire supprimé." });
+  } catch (error) {
+    res.status(500).json({ error: "Erreur lors de la suppression." });
+  }
+});
 
 export default router;
