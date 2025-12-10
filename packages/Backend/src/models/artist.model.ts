@@ -1,21 +1,30 @@
-import prisma from "../config/database";
+import { getDataSource } from "../config/database";
+import { Artist } from "../entities/Artist";
+import { User } from "../entities/User";
 
 // Get all artists
 export const getAllArtists = async () => {
-  return await prisma.artists.findMany();
+  const artistRepository = getDataSource().getRepository(Artist);
+  return await artistRepository.find({
+    relations: ["category", "user"],
+  });
 };
 
 // Get artist by ID
 export const getArtistById = async (id: string) => {
-  return await prisma.artists.findUnique({
-    where: { id: Number(id) },
+  const artistRepository = getDataSource().getRepository(Artist);
+  return await artistRepository.findOne({
+    where: { id },
+    relations: ["category", "user"],
   });
 };
 
 // Get artists by category
 export const getArtistsByCategory = async (category: string) => {
-  return await prisma.artists.findMany({
-    where: { category },
+  const artistRepository = getDataSource().getRepository(Artist);
+  return await artistRepository.find({
+    where: { category: { name: category } },
+    relations: ["category", "user"],
   });
 };
 
@@ -26,25 +35,33 @@ export const createArtist = async (data: {
   city: string;
   mail: string;
   category: string;
-  userId: number;
+  userId: string;
 }) => {
-  return await prisma.artists.create({
-    data: {
-      name: data.name,
-      phone: data.phone,
-      mail: data.mail,
-      category: data.category,
-      city: data.city,
-      user: { connect: { id: data.userId } },
-    },
+  const artistRepository = getDataSource().getRepository(Artist);
+  const userRepository = getDataSource().getRepository(User);
+
+  const user = await userRepository.findOne({ where: { id: data.userId } });
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const newArtist = artistRepository.create({
+    name: data.name,
+    phone: data.phone,
+    mail: data.mail,
+    city: data.city,
+    user: user,
   });
+
+  return await artistRepository.save(newArtist);
 };
 
 // Delete an artist by ID
 export const deleteArtist = async (id: string) => {
-  return await prisma.artists.delete({
-    where: { id: Number(id) },
-  });
+  const artistRepository = getDataSource().getRepository(Artist);
+  return await artistRepository.remove(
+    await artistRepository.findOneOrFail({ where: { id } })
+  );
 };
 
 export const updateArtistById = async (
@@ -59,8 +76,9 @@ export const updateArtistById = async (
     image?: string;
   }
 ) => {
-  return await prisma.artists.update({
-    where: { id: Number(id) },
-    data: updatedData,
-  });
+  const artistRepository = getDataSource().getRepository(Artist);
+  const artist = await artistRepository.findOneOrFail({ where: { id } });
+
+  Object.assign(artist, updatedData);
+  return await artistRepository.save(artist);
 };

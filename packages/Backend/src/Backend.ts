@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import express from "express";
 import commentRoutes from "./routes/comments.routes";
 import routes from "./routes/index.routes";
+import { initializeDatabase } from "./config/database";
 
 dotenv.config();
 const app = express();
@@ -30,8 +31,16 @@ app.use((req, res, next) => {
 app.use("/api/comments", commentRoutes);
 app.use("/", routes);
 
-app.listen(PORT, () => {
-  console.log(`Serveur lancé sur http://localhost:${PORT}`);
-});
+// Initialize database before starting server
+initializeDatabase()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Serveur lancé sur http://localhost:${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.error("Failed to initialize database:", error);
+    process.exit(1);
+  });
 
 export default app;
