@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Button from "../atoms/Button";
 
 const API_URL = "http://localhost:3001/institutions";
+const AUTH_API_URL = "http://localhost:3001/auth";
 
 interface Institution {
   id: number;
@@ -15,8 +16,19 @@ interface Institution {
 }
 
 interface Comment {
-  id: number;
+  id: number | string;
   content: string;
+  createdAt?: string;
+  author?: {
+    id: string;
+    email: string;
+  };
+}
+
+interface User {
+  id: string;
+  email: string;
+  role: string;
 }
 
 const InstitutionDetailElement = ({
@@ -28,6 +40,8 @@ const InstitutionDetailElement = ({
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [error, setError] = useState("");
 
   // Nouveaux états pour l'édition
   const [isEditing, setIsEditing] = useState(false);
@@ -43,9 +57,43 @@ const InstitutionDetailElement = ({
     }
   }, [institutionId]);
 
-  const checkAuthentication = () => {
-    const token = localStorage.getItem("authToken");
-    setIsAuthenticated(!!token);
+  const checkAuthentication = async () => {
+    // Vérifier d'abord dans localStorage
+    const token = localStorage.getItem("token") || localStorage.getItem("authToken");
+    if (!token) {
+      setIsAuthenticated(false);
+      setCurrentUser(null);
+      return;
+    }
+
+    // Vérifier via l'API que le token est toujours valide
+    try {
+      const response = await fetch(`${AUTH_API_URL}/check`, {
+        credentials: "include", // Inclure les cookies
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.data?.user) {
+          setIsAuthenticated(true);
+          setCurrentUser(data.data.user);
+        } else {
+          setIsAuthenticated(false);
+          setCurrentUser(null);
+          localStorage.removeItem("token");
+          localStorage.removeItem("authToken");
+        }
+      } else {
+        setIsAuthenticated(false);
+        setCurrentUser(null);
+        localStorage.removeItem("token");
+        localStorage.removeItem("authToken");
+      }
+    } catch (error) {
+      console.error("Erreur lors de la vérification de l'authentification:", error);
+      setIsAuthenticated(false);
+      setCurrentUser(null);
+    }
   };
 
   const fetchInstitutionIdDetails = async () => {
@@ -61,7 +109,7 @@ const InstitutionDetailElement = ({
 
   const fetchComments = async () => {
     try {
-      const response = await fetch(`${API_URL}/comments/${institutionId}`);
+      const response = await fetch(`http://localhost:3001/api/comments/${institutionId}`);
       if (!response.ok)
         throw new Error("Erreur lors du chargement des commentaires.");
       const data = await response.json();
@@ -75,25 +123,35 @@ const InstitutionDetailElement = ({
     if (newComment.trim() === "") return;
 
     if (!isAuthenticated) {
-      alert("Vous devez être connecté pour ajouter un commentaire.");
+      setError("Vous devez être connecté pour ajouter un commentaire.");
       return;
     }
 
+    setError("");
+
     try {
-      const response = await fetch(`${API_URL}/comments`, {
+      const response = await fetch(`http://localhost:3001/api/comments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ institutionId, content: newComment }),
+        credentials: "include", // Important : inclure les cookies pour l'authentification
+        body: JSON.stringify({ 
+          institutionId: institutionId.toString(), 
+          content: newComment 
+        }),
       });
 
-      if (!response.ok)
-        throw new Error("Erreur lors de l'ajout du commentaire.");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Erreur lors de l'ajout du commentaire.");
+      }
 
       const addedComment = await response.json();
-      setComments((prev) => [...prev, addedComment]);
+      setComments((prev) => [addedComment, ...prev]); // Ajouter au début de la liste
       setNewComment("");
-    } catch (error) {
+      setError("");
+    } catch (error: any) {
       console.error("Erreur:", error);
+      setError(error.message || "Erreur lors de l'ajout du commentaire.");
     }
   };
 
@@ -141,56 +199,40 @@ const InstitutionDetailElement = ({
   };
 
   if (!institution) {
-    return <p>Chargement des détails de l'institution...</p>;
+    return <div>Chargement...</div>;
   }
 
   return (
-    <main className="min-h-screen bg-background flex flex-col items-center p-6">
-      <header className="w-full max-w-4xl rounded-xl overflow-hidden shadow-lg">
-        {/*<img
-          src={institution.image || "/default-image.jpg"}
-          alt={institution.name}
-          className="w-full h-72 object-cover"
-        />*/}
-        <img
-          src="/images/imageRodia.png"
-          alt={`Image de la rodia`}
-          className="w-25 rounded-lg border border-gray-300 shadow-sm"
-        />
-      </header>
-
-      <section
-        aria-labelledby="institution-infos"
-        className="bg-white w-full max-w-4xl p-6 rounded-xl shadow-md mt-6"
-      >
+    <main className="container mx-auto px-4 py-8">
+      <section className="bg-white w-full max-w-4xl p-6 rounded-xl shadow-md">
         {!isEditing ? (
-          <>
-            <h1
-              id="institution-infos"
-              className="text-3xl font-bold text-gray-900"
-            >
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">
               {institution.name}
             </h1>
-            <p className="text-gray-600 text-lg">Genre : {institution.genre}</p>
-            <address className="mt-4 not-italic space-y-2">
-              <p>
-                <strong>Téléphone :</strong> {institution.phone}
-              </p>
-              <p>
-                <strong>Adresse :</strong> {institution.address}
-              </p>
-              <p>
-                <strong>Mail :</strong> {institution.mail}
-              </p>
-            </address>
-            <article className="mt-4">
-              <p>
-                <strong>Description :</strong> {institution.description}
-              </p>
-            </article>
-          </>
+            {institution.image && (
+              <img
+                src={institution.image}
+                alt={institution.name}
+                className="w-full h-64 object-cover rounded-lg mb-4"
+              />
+            )}
+            <p className="text-gray-700 mb-2">
+              <strong>Genre:</strong> {institution.genre}
+            </p>
+            <p className="text-gray-700 mb-2">
+              <strong>Téléphone:</strong> {institution.phone}
+            </p>
+            <p className="text-gray-700 mb-2">
+              <strong>Adresse:</strong> {institution.address}
+            </p>
+            <p className="text-gray-700 mb-2">
+              <strong>Email:</strong> {institution.mail}
+            </p>
+            <p className="text-gray-700 mt-4">{institution.description}</p>
+          </div>
         ) : (
-          <form onSubmit={handleUpdateSubmit} className="space-y-4">
+          <form onSubmit={handleUpdateSubmit}>
             <input
               type="text"
               placeholder="Nom"
@@ -278,19 +320,66 @@ const InstitutionDetailElement = ({
       >
         <h2
           id="commentaires-titre"
-          className="text-2xl font-bold text-gray-900"
+          className="text-2xl font-bold text-gray-900 mb-4"
         >
           Commentaires
         </h2>
 
-        <div className="mt-4">
+        <div className="mt-4 space-y-4">
           {comments.length > 0 ? (
             comments.map((comment) => (
               <article
                 key={comment.id}
-                className="p-2 border-b border-gray-300"
+                className="p-4 border border-gray-200 rounded-lg bg-gray-50"
               >
-                {comment.content}
+                <div className="flex justify-between items-start mb-2">
+                  <div>
+                    {comment.author && (
+                      <p className="text-sm font-semibold text-gray-700">
+                        {comment.author.email}
+                      </p>
+                    )}
+                    {comment.createdAt && (
+                      <p className="text-xs text-gray-500">
+                        {new Date(comment.createdAt).toLocaleDateString("fr-FR", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </p>
+                    )}
+                  </div>
+                  {currentUser && comment.author && currentUser.id === comment.author.id && (
+                    <button
+                      className="text-red-500 text-sm hover:text-red-700"
+                      onClick={async () => {
+                        if (window.confirm("Supprimer ce commentaire ?")) {
+                          try {
+                            const response = await fetch(
+                              `http://localhost:3001/api/comments/${comment.id}`,
+                              {
+                                method: "DELETE",
+                                credentials: "include",
+                              }
+                            );
+                            if (response.ok) {
+                              setComments((prev) =>
+                                prev.filter((c) => c.id !== comment.id)
+                              );
+                            }
+                          } catch (error) {
+                            console.error("Erreur lors de la suppression:", error);
+                          }
+                        }
+                      }}
+                    >
+                      Supprimer
+                    </button>
+                  )}
+                </div>
+                <p className="text-gray-800">{comment.content}</p>
               </article>
             ))
           ) : (
@@ -298,40 +387,51 @@ const InstitutionDetailElement = ({
           )}
         </div>
 
-        <form
-          className="mt-4"
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleAddComment();
-          }}
-        >
-          <textarea
-            className="w-full p-2 border rounded-lg"
-            placeholder="Ajoutez un commentaire..."
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            disabled={!isAuthenticated}
-          />
-          <button
-            type="submit"
-            className="mt-2 px-4 py-2 bg-button text-white rounded-lg hover:bg-blue-700"
-            disabled={!isAuthenticated}
+        {isAuthenticated ? (
+          <form
+            className="mt-6"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleAddComment();
+            }}
           >
-            Ajouter
-          </button>
-          {!isAuthenticated && (
-            <p className="text-red-500 text-sm mt-2">
-              Vous devez être connecté pour ajouter un commentaire.
+            {error && (
+              <p className="text-red-500 text-sm mb-2" role="alert">
+                {error}
+              </p>
+            )}
+            <textarea
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder={`Ajoutez un commentaire en tant que ${currentUser?.email}...`}
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              rows={4}
+            />
+            <button
+              type="submit"
+              className="mt-3 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              disabled={!newComment.trim()}
+            >
+              Publier le commentaire
+            </button>
+          </form>
+        ) : (
+          <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <p className="text-yellow-800">
+              Vous devez être connecté pour ajouter un commentaire.{" "}
+              <a href="/login" className="text-blue-600 hover:underline">
+                Se connecter
+              </a>
             </p>
-          )}
-        </form>
+          </div>
+        )}
       </section>
 
       <section className="pt-4 flex justify-center">
         {!isEditing && (
-          <section className="flex gap-4 w-full max-w-md  h-12">
+          <section className="flex gap-4 w-full max-w-md h-12">
             <Button
-              className="w-1/2 "
+              className="w-1/2"
               onClick={() => {
                 setEditedInstitution(institution);
                 setIsEditing(true);
