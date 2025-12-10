@@ -1,11 +1,43 @@
-import { InferInsertModel, InferSelectModel } from "drizzle-orm";
-import { comment } from "../schemas";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+  CreateDateColumn,
+  JoinColumn,
+} from "typeorm";
+import { User } from "./User";
+import { Institution } from "./Institution";
 
-// Un type pour le modèle d'un Comment au moment de la selection dans la DB
-export type Comment = InferSelectModel<typeof comment>;
+@Entity("comments")
+export class Comment {
+  @PrimaryGeneratedColumn("uuid")
+  id!: string;
 
-// Un type pour le modèle d'un Comment au moment de son insertion dans la DB
-export type NewComment = InferInsertModel<typeof comment>;
+  @Column({ type: "text" })
+  content!: string;
 
-// Un type qui sera un objet avec des clés optionnelles qui correspondent aux colonnes de notre table Comment
-export type CommentColumns = { [K in keyof Comment]?: boolean };
+  @CreateDateColumn()
+  createdAt!: Date;
+
+  @ManyToOne(() => User, (user) => user.comments, { onDelete: "CASCADE" })
+  @JoinColumn({ name: "authorId" })
+  author!: User;
+
+  @ManyToOne(() => Institution, (institution) => institution.comments, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "institutionId" })
+  institution!: Institution;
+
+  @ManyToOne(() => Comment, (comment) => comment.replies, {
+    nullable: true,
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "parentId" })
+  parent?: Comment;
+
+  @OneToMany(() => Comment, (comment) => comment.parent)
+  replies!: Comment[];
+}
