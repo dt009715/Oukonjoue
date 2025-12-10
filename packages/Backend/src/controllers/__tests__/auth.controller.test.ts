@@ -3,22 +3,15 @@ import type { Request, Response } from "express";
 process.env.JWT_SECRET = "test-secret";
 process.env.NODE_ENV = "test";
 
-const mockUserRepository = {
-  findOne: jest.fn(),
-  create: jest.fn(),
-  save: jest.fn(),
-};
-
-const mockGetRepository = jest.fn(() => mockUserRepository);
-
-const mockDataSource = {
-  getRepository: mockGetRepository,
-  isInitialized: true,
+const mockPrisma = {
+  user: {
+    findUnique: jest.fn(),
+  },
 };
 
 jest.mock("../../config/database", () => ({
   __esModule: true,
-  getDataSource: jest.fn(() => mockDataSource),
+  default: mockPrisma,
 }));
 
 const mockRegisterUser = jest.fn();
@@ -67,7 +60,7 @@ describe("auth.controller register", () => {
   });
 
   it("retourne 400 si l'email existe déjà", async () => {
-    mockUserRepository.findOne.mockResolvedValue({ id: "uuid-1" });
+    mockPrisma.user.findUnique.mockResolvedValue({ id: 1 });
     const res = createMockResponse();
 
     await register(buildRequest(validPayload), res);
@@ -83,7 +76,7 @@ describe("auth.controller register", () => {
   });
 
   it("crée un utilisateur quand le payload est valide", async () => {
-    mockUserRepository.findOne.mockResolvedValue(null);
+    mockPrisma.user.findUnique.mockResolvedValue(null);
     const res = createMockResponse();
 
     await register(buildRequest(validPayload), res);
@@ -111,7 +104,7 @@ describe("auth.controller login", () => {
   });
 
   it("retourne 401 si l'utilisateur est introuvable", async () => {
-    mockUserRepository.findOne.mockResolvedValue(null);
+    mockPrisma.user.findUnique.mockResolvedValue(null);
     const res = createMockResponse();
 
     await login(
@@ -128,8 +121,8 @@ describe("auth.controller login", () => {
   });
 
   it("retourne 200 et ajoute un cookie en cas de succès", async () => {
-    mockUserRepository.findOne.mockResolvedValue({
-      id: "uuid-42",
+    mockPrisma.user.findUnique.mockResolvedValue({
+      id: 42,
       password: "hash",
     });
     const res = createMockResponse();
@@ -155,3 +148,4 @@ describe("auth.controller login", () => {
     );
   });
 });
+
