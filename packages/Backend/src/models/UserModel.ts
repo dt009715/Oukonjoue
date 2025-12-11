@@ -1,8 +1,7 @@
+import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
-import { getDataSource } from "../config/database";
-import { User, UserRole } from "../entities/User";
-import { Artist } from "../entities/Artist";
-import { Institution } from "../entities/Institution";
+
+const prisma = new PrismaClient();
 
 export const registerUser = async (data: {
   password: string;
@@ -17,12 +16,8 @@ export const registerUser = async (data: {
   description?: string;
 }) => {
   try {
-    const userRepository = getDataSource().getRepository(User);
-    const artistRepository = getDataSource().getRepository(Artist);
-    const institutionRepository = getDataSource().getRepository(Institution);
-
-    // Check if email already exists
-    const existingUser = await userRepository.findOne({
+    // mail checking
+    const existingUser = await prisma.user.findUnique({
       where: { email: data.mail },
     });
 
@@ -33,42 +28,43 @@ export const registerUser = async (data: {
     // Hash password
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
-    // Create User
-    const newUser = userRepository.create({
-      email: data.mail,
-      password: hashedPassword,
-      role: data.role as UserRole,
+    // create User
+    const newUser = await prisma.user.create({
+      data: {
+        email: data.mail,
+        password: hashedPassword,
+        role: data.role,
+      },
     });
-    const savedUser = await userRepository.save(newUser);
 
-    // Create Artist or Institution based on role
+    // select if type = ARTTSTS or INSTITUTIONS
     if (data.role === "ARTISTS") {
-      const newArtist = artistRepository.create({
-        name: data.name,
-        city: data.city,
-        phone: data.phone,
-        mail: data.mail,
-        description: data.description,
-        image: data.image,
-        user: savedUser,
+      await prisma.artists.create({
+        data: {
+          name: data.name,
+          city: data.city,
+          phone: data.phone,
+          mail: data.mail,
+          category: data.category ?? "Non spécifié",
+          description: data.description,
+        },
       });
-      await artistRepository.save(newArtist);
     } else if (data.role === "INSTITUTIONS") {
-      const newInstitution = institutionRepository.create({
-        name: data.name,
-        address: data.address,
-        phone: data.phone,
-        mail: data.mail,
-        city: data.city ?? "non spécifiée",
-        description: data.description,
-        user: savedUser,
+      await prisma.institutions.create({
+        data: {
+          name: data.name,
+          address: data.address,
+          phone: data.phone,
+          mail: data.mail,
+          city: data.city ?? "non spécifiée",
+          description: data.description,
+        },
       });
-      await institutionRepository.save(newInstitution);
     }
 
     return { message: "Inscription réussie !" };
   } catch (error) {
     console.error(error);
-    throw new Error("Erreur lors de l'inscription.");
+    throw new Error("Erreur lors de l’inscription.");
   }
 };

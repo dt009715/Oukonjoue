@@ -7,7 +7,7 @@ import {
 } from "../controllers/artists.controller";
 
 const router = Router();
-console.log("Routes artistes chargées !");
+console.log("🚀 Routes artistes chargées !");
 
 // [GET] http://localhost:3001/artists
 router.get("/", getArtists);

@@ -3,8 +3,7 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { z } from "zod";
 
-import { getDataSource } from "../config/database";
-import { User } from "../entities/User";
+import prisma from "../config/database";
 import { registerUser } from "../models/UserModel";
 import { APIResponse, logger } from "../utils";
 
@@ -36,8 +35,7 @@ export const register = async (request: Request, response: Response) => {
   try {
     const data = validationSchema.parse(request.body);
 
-    const userRepository = getDataSource().getRepository(User);
-    const existingUser = await userRepository.findOne({
+    const existingUser = await prisma.user.findUnique({
       where: { email: data.mail },
     });
 
@@ -80,42 +78,31 @@ export const register = async (request: Request, response: Response) => {
 export const login = async (req: Request, res: Response) => {
   const { mail, password } = req.body;
 
-  // Validation des champs requis
-  if (!mail || !password) {
-    return APIResponse(res, null, "Email et mot de passe requis", 400);
-  }
-
-  const userRepository = getDataSource().getRepository(User);
-  const user = await userRepository.findOne({
+  const user = await prisma.user.findUnique({
     where: { email: mail },
   });
 
   if (!user) {
-    return APIResponse(res, null, "Email ou mot de passe incorrect", 401);
+    return APIResponse(res, null, "Utilisateur non trouvé avec l'email", 401);
   }
 
   const valid = await bcrypt.compare(password, user.password);
   if (!valid) {
     return APIResponse(res, null, "Email ou mot de passe incorrect", 401);
   }
+  console.log("Mot de passe entré :", password);
+  console.log("Mot de passe en DB :", user.password);
 
   const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: "1h" });
 
-  // Mettre le token dans un cookie httpOnly (sécurisé)
   res.cookie("accessToken", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
-    maxAge: 3600000, // 1 heure
+    maxAge: 3600000,
   });
-
-  // Retourner aussi le token dans la réponse JSON pour le frontend
-  return APIResponse(
-    res,
-    { token, user: { id: user.id, email: user.email, role: user.role } },
-    "Vous êtes connecté",
-    200
-  );
+  console.log("login ok");
+  return APIResponse(res, null, "Vous êtes connecté", 200);
 };
 
 export const logout = (request: Request, response: Response) => {
@@ -123,32 +110,40 @@ export const logout = (request: Request, response: Response) => {
   APIResponse(response, null, "Vous êtes déconnecté", 200);
 };
 
-// Endpoint pour vérifier l'authentification
-export const checkAuth = async (req: Request, res: Response) => {
-  const { accessToken } = req.cookies;
-
-  if (!accessToken) {
-    return APIResponse(res, null, "Non authentifié", 401);
-  }
-
+/*export const deleteUser = async (req: Request, res: Response) => {
   try {
-    const decoded = jwt.verify(accessToken, JWT_SECRET) as { id: string };
-    const userRepository = getDataSource().getRepository(User);
-    const user = await userRepository.findOne({
-      where: { id: decoded.id },
+    const token = req.cookies.accessToken;
+
+    if (!token) {
+      return APIResponse(res, null, "Non autorisé, token manquant", 401);
+    }
+
+    let decodedToken;
+    try {
+      decodedToken = jwt.verify(token, JWT_SECRET);
+    } catch (err) {
+      return APIResponse(res, null, "Token invalide", 401);
+    }
+
+    const userId = (decodedToken as { id: string }).id;
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
     });
 
     if (!user) {
-      return APIResponse(res, null, "Utilisateur non trouvé", 401);
+      return APIResponse(res, null, "Utilisateur non trouvé", 404);
     }
 
-    return APIResponse(
-      res,
-      { user: { id: user.id, email: user.email, role: user.role } },
-      "Authentifié",
-      200
-    );
-  } catch (err) {
-    return APIResponse(res, null, "Token invalide", 401);
+    await prisma.user.delete({
+      where: { id: userId },
+    });
+
+    response.clearCookie("accessToken");
+
+    return APIResponse(res, null, "Utilisateur supprimé avec succès", 200);
+  } catch (err: any) {
+    logger.error(`Erreur lors de la suppression de l'utilisateur: ${err.message}`);
+    return APIResponse(res, null, "Erreur serveur", 500);
   }
-};
+};*/
