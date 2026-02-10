@@ -1,0 +1,42 @@
+@startuml
+start
+
+:L'utilisateur (artiste ou salle) est connecté;
+:Accéder à l'historique des événements réalisés;
+:Appeler API GET /events/history;
+
+if (Événement réalisé avec un partenaire ?) then (Oui)
+  :Sélectionner l'événement concerné;
+  :Appeler API GET /events/{id};
+  :Appeler API GET /comments?eventId={id};
+
+  if (Commentaire déjà existant ?) then (Oui)
+    :Afficher le commentaire existant;
+    :Choisir de modifier le commentaire;
+  else (Non)
+    :Choisir de laisser un commentaire;
+  endif
+
+  :Saisir le commentaire\n(organisation, accueil,\nconditions, relationnel);
+
+  if (Commentaire valide ?) then (Oui)
+    :Enregistrer le commentaire;
+    :Appeler API POST /comments;
+    :Publier le commentaire;
+    :Appeler API POST /comments/{id}/publish;
+    :Associer le commentaire\nà l'artiste et à la salle;
+  else (Non)
+    :Afficher un message d'erreur\n(commentaire vide ou invalide);
+  endif
+
+else (Non)
+  :Afficher un message\n"Vous ne pouvez commenter\nque des événements réalisés";
+endif
+
+if (Un autre utilisateur consulte la fiche ?) then (Oui)
+  :Appeler API GET /comments?entityId={id};
+  :Afficher les commentaires\nliés aux événements passés;
+endif
+
+stop
+@enduml

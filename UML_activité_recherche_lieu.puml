@@ -1,0 +1,45 @@
+@startuml
+start
+
+:Ouvrir la page "Rechercher un lieu";
+:Afficher barre de recherche + filtres;
+:Appeler API GET /places/filters;
+
+if (L'utilisateur saisit une ville ou un département ?) then (Oui)
+  :Valider la recherche;
+else (Non)
+  :Appeler API GET /places/recommended;
+  :Afficher les lieux recommandés / récents;
+endif
+
+if (Recherche par ville ?) then (Oui)
+  :Définir un rayon de recherche (ex: 10, 25, 50 km);
+endif
+
+:Appliquer les filtres (si renseignés);
+:Rechercher les lieux correspondants;
+:Appeler API GET /places/search;
+
+if (Des lieux sont trouvés ?) then (Oui)
+  :Afficher la liste des lieux (résultats);
+
+  if (Distance disponible ?) then (Oui)
+    :Afficher la distance pour chaque lieu;
+  else (Non)
+    :Afficher les lieux sans distance;
+  endif
+
+  if (L'utilisateur sélectionne un lieu ?) then (Oui)
+    :Appeler API GET /places/{id};
+    :Afficher la fiche du lieu;
+  else (Non)
+    :Rester sur la liste des résultats;
+  endif
+
+else (Non)
+  :Afficher un message "Aucun lieu trouvé";
+  :Proposer de modifier la recherche ou le rayon;
+endif
+
+stop
+@enduml

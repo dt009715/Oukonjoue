@@ -1,0 +1,50 @@
+@startuml
+title Recherche d'un lieu (ville/département + filtres)
+
+actor Utilisateur as U
+boundary "UI Recherche\n(Front)" as UI
+control "API Oùkonjoue\n(Back)" as API
+database "Base de données\n(PostgreSQL)" as DB
+
+U -> UI : Saisir ville/département + filtres\nCliquer sur "Rechercher"
+activate UI
+
+UI -> API : GET /api/lieux?query={villeOuDep}&filtres=...
+activate API
+
+API -> DB : SELECT * FROM departement\nWHERE nom ILIKE query OR numero = query\nOU SELECT * FROM ville WHERE nom ILIKE query
+activate DB
+DB --> API : Résultat ville/département (0 ou 1+)
+deactivate DB
+
+alt Ville/Département trouvé
+  API -> DB : SELECT * FROM institution\nWHERE id_departement = ?\nAND (filtres...)
+  activate DB
+  DB --> API : Liste des lieux
+  deactivate DB
+
+  API --> UI : 200 OK\nJSON: liste des lieux
+  deactivate API
+
+  U -> UI : Cliquer sur un lieu
+  UI -> API : GET /api/lieux/{id}
+  activate API
+
+  API -> DB : SELECT * FROM institution\nWHERE id_institution = {id}
+  activate DB
+  DB --> API : Détails du lieu
+  deactivate DB
+
+  API --> UI : 200 OK\nJSON: fiche lieu
+  deactivate API
+
+  UI --> U : Afficher résultats + fiche lieu
+  deactivate UI
+
+else Ville/Département introuvable
+  API --> UI : 404 Not Found\nJSON: { message: "Ville/Département introuvable" }
+  deactivate API
+  UI --> U : Afficher message d'erreur
+  deactivate UI
+end
+@enduml

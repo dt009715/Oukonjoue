@@ -1,0 +1,96 @@
+@startuml
+title Commenter un événement (artiste <-> salle) + contrôles + erreurs
+
+actor "Utilisateur\n(Artiste ou Salle)" as U
+boundary "UI Commentaires\n(Front)" as UI
+control "API Oùkonjoue\n(Back)" as API
+database "Base de données\n(PostgreSQL)" as DB
+
+
+U -> UI : Ouvrir "Mes événements réalisés"
+activate UI
+
+UI -> API : GET /api/evenements/realises
+activate API
+
+API -> DB : SELECT e.*\nFROM evenement e\nJOIN participation p ON p.evenement_id = e.id\nWHERE p.utilisateur_id = :userId
+activate DB
+DB --> API : Liste événements (ou erreur)
+deactivate DB
+
+alt Chargement OK
+  API --> UI : 200 OK\nJSON: événements réalisés
+else Erreur DB / serveur
+  API --> UI : 500 Server Error\nJSON: erreur chargement événements
+  UI --> U : Afficher message d'erreur
+  break
+end
+
+deactivate API
+
+
+U -> UI : Sélectionner un événement
+UI -> API : GET /api/evenements/{eventId}/eligibilite-commentaire
+activate API
+
+API -> DB : SELECT COUNT(*)\nFROM participation p\nWHERE p.evenement_id = :eventId\nAND p.utilisateur_id = :userId
+activate DB
+DB --> API : nb_participations (0/1)
+deactivate DB
+
+alt Relation OK (événement réalisé)
+  API --> UI : 200 OK\nJSON: eligible=true
+else Relation échoue (non autorisé)
+  API --> UI : 403 Forbidden\nJSON: "Vous ne pouvez commenter\nque des événements réalisés"
+  UI --> U : Afficher message d'erreur
+  break
+end
+
+deactivate API
+
+
+UI -> API : GET /api/commentaires?eventId={eventId}
+activate API
+
+API -> DB : SELECT c.*\nFROM commentaire c\nWHERE c.evenement_id = :eventId\nAND c.auteur_id = :userId\nLIMIT 1
+activate DB
+DB --> API : Commentaire (ou vide)
+deactivate DB
+
+alt Commentaire déjà existant
+  API --> UI : 200 OK\nJSON: commentaire existant
+  UI --> U : Afficher + proposer "Modifier"
+else Aucun commentaire
+  API --> UI : 200 OK\nJSON: aucun commentaire
+  UI --> U : Proposer "Laisser un commentaire"
+end
+
+deactivate API
+
+U -> UI : Saisir le commentaire\nCliquer "Publier"
+UI -> API : POST /api/commentaires\n{ eventId, contenu }
+activate API
+
+alt Validation OK
+  API -> DB : INSERT INTO commentaire (evenement_id, auteur_id, contenu, date_creation)\nVALUES (:eventId, :userId, :contenu, NOW())\nON CONFLICT (evenement_id, auteur_id)\nDO UPDATE SET contenu = EXCLUDED.contenu,\n            date_creation = NOW()
+  activate DB
+  DB --> API : OK (ou erreur)
+  deactivate DB
+
+  alt Enregistrement OK
+    API --> UI : 201/200 OK\nJSON: commentaire publié
+    UI --> U : Afficher confirmation
+  else Erreur DB / serveur
+    API --> UI : 500 Server Error\nJSON: erreur publication commentaire
+    UI --> U : Afficher message d'erreur
+  end
+
+else Validation KO
+  API --> UI : 400 Bad Request\nJSON: commentaire vide ou invalide
+  UI --> U : Afficher message d'erreur
+end
+
+deactivate API
+deactivate UI
+
+@enduml

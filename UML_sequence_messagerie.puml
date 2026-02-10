@@ -1,0 +1,48 @@
+@startuml
+title Envoi d’un message et notification
+
+actor Utilisateur as U
+boundary "Interface Messagerie\n(Front)" as UI
+control "API Oùkonjoue\n(Back)" as API
+database "Base de données\n(PostgreSQL)" as DB
+control "Service Email" as M
+
+U -> UI : Rédiger un message\nCliquer sur "Envoyer"
+activate UI
+
+UI -> API : POST /api/messages\n{ conversationId, texte }
+activate API
+
+API -> DB : INSERT INTO message (...)
+activate DB
+DB --> API : Confirmation d'insertion
+deactivate DB
+
+alt Envoi réussi
+  API --> UI : 201 Created\nJSON: message envoyé
+  deactivate API
+
+  API -> DB : Vérifier statut de lecture\n(destinataire)
+  activate DB
+  DB --> API : Message non lu
+  deactivate DB
+
+  alt Message consulté
+    API -> API : Ne pas envoyer de notification
+  else Message non consulté après délai
+    API -> M : POST /send-email\n(notification)
+    activate M
+    M --> API : Confirmation d'envoi
+    deactivate M
+  end
+
+  UI --> U : Afficher le message dans la conversation
+  deactivate UI
+
+else Erreur lors de l'envoi
+  API --> UI : 500 Server Error\nJSON: erreur d'envoi
+  deactivate API
+  UI --> U : Afficher message d'erreur
+  deactivate UI
+end
+@enduml

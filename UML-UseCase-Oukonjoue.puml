@@ -1,0 +1,107 @@
+@startuml
+left to right direction
+skinparam actorStyle awesome
+skinparam packageStyle rectangle
+
+actor "Visiteur" as V
+actor "Utilisateur\n(authentifié)" as U
+actor "Artiste / Groupe" as A
+actor "Établissement\n(Salle/Bar/Festival)" as E
+actor "Administrateur" as ADM
+
+' --- Héritage acteurs
+U --|> V
+A --|> U
+E --|> U
+ADM --|> A
+ADM --|> E
+
+rectangle "Oùkonjoue ?" {
+
+  ' --- Auth au-dessus (hors package)
+  usecase "S'inscrire" as UC_Register
+  usecase "Se connecter" as UC_Login
+
+  package "Accès & Compte" {
+    usecase "Se déconnecter" as UC_Logout
+    usecase "Consulter / Modifier\nmon profil" as UC_Profile
+    usecase "Supprimer mon compte" as UC_DeleteAccount
+  }
+
+  package "Lieux" {
+    usecase "Consulter la liste\ndes lieux" as UC_ListVenues
+    usecase "Filtrer les lieux\n(département, type,\ngenre, matériel)" as UC_FilterVenues
+    usecase "Consulter le détail\nd'un lieu" as UC_VenueDetails
+    usecase "Contacter un lieu" as UC_ContactVenue
+    usecase "Commenter un lieu" as UC_CommentVenue
+  }
+
+  package "Groupes" {
+    usecase "Consulter la liste\ndes groupes" as UC_ListBands
+    usecase "Consulter le détail\nd'un groupe" as UC_BandDetails
+    usecase "Ajouter / afficher\nliens externes\n(Spotify, Linktree...)" as UC_ExternalLinks
+    usecase "Contacter un groupe" as UC_ContactBand
+  }
+
+  package "Administration" {
+    usecase "Créer une fiche lieu" as UC_CreateVenue
+    usecase "Modifier une fiche lieu" as UC_EditVenue
+    usecase "Supprimer une fiche lieu" as UC_DeleteVenue
+    usecase "Modérer les commentaires" as UC_ModerateComments
+    usecase "Gérer les utilisateurs" as UC_ManageUsers
+  }
+
+  package "Support & Informations" {
+    usecase "Envoyer un message\nvia Contact" as UC_ContactForm
+    usecase "Proposer l'ajout\nd'un lieu" as UC_SuggestVenue
+    usecase "Consulter les\nmentions légales" as UC_Terms
+  }
+}
+
+' --- Associations (Visiteur : public)
+V --> UC_ListVenues
+V --> UC_FilterVenues
+V --> UC_VenueDetails
+V --> UC_ListBands
+V --> UC_BandDetails
+V --> UC_ContactForm
+V --> UC_Terms
+V --> UC_Register
+V --> UC_Login
+
+' --- Associations (Utilisateur authentifié : commun)
+U --> UC_Login
+U --> UC_Logout
+U --> UC_Profile
+U --> UC_DeleteAccount
+
+' --- Spécifiques Artiste / Groupe
+A --> UC_ContactVenue
+A --> UC_CommentVenue
+A --> UC_ExternalLinks
+
+' --- Spécifiques Établissement
+E --> UC_ContactBand
+E --> UC_ExternalLinks
+
+' --- Admin (droits admin spécifiques)
+ADM --> UC_CreateVenue
+ADM --> UC_EditVenue
+ADM --> UC_DeleteVenue
+ADM --> UC_ModerateComments
+ADM --> UC_ManageUsers
+
+' --- Règles include / extend
+UC_FilterVenues ..> UC_ListVenues : <<include>>
+UC_VenueDetails ..> UC_ListVenues : <<extend>>
+UC_BandDetails ..> UC_ListBands : <<extend>>
+
+UC_ContactVenue ..> UC_Login : <<include>>
+UC_CommentVenue ..> UC_Login : <<include>>
+UC_ContactBand ..> UC_Login : <<include>>
+UC_Profile ..> UC_Login : <<include>>
+UC_DeleteAccount ..> UC_Login : <<include>>
+
+UC_SuggestVenue ..> UC_ContactForm : <<extend>>
+@enduml
+

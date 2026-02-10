@@ -1,0 +1,69 @@
+@startuml
+left to right direction
+hide circle
+skinparam linetype ortho
+
+entity "Utilisateur" as U {
+  nom
+  mail
+  image
+  tel
+  lien
+  mot_de_passe
+  description
+}
+
+entity "Role" as R {
+  nom_role
+}
+
+entity "Departement" as D {
+  nom
+  numero
+}
+
+entity "Categorie" as C {
+  nom_categorie
+}
+
+entity "Artiste" as A {
+  spotify
+  linktree
+}
+
+entity "Institution" as I {
+  materiel
+  adresse
+}
+
+entity "Commentaire" as Com {
+  contenu
+  date_creation
+}
+
+entity "Conversation" as Conv {
+  date_creation
+}
+
+entity "Message" as Msg {
+  texte
+  heure
+}
+
+' --- Spécialisation
+A --|> U
+I --|> U
+
+' --- Associations + cardinalités
+U "1,1" -- "0,n" R : a
+U "1,1" -- "0,n" D : est_localise_dans
+U "0,1" -- "0,n" C : appartient_a
+
+U "0,n" -- "1,1" Com : ecrit
+I "0,n" -- "1,1" Com : recoit
+
+U "0,n" -- "2,2" Conv : participe
+Conv "1,1" -- "1,n" Msg : contient
+U "0,n" -- "1,1" Msg : envoie
+
+@enduml

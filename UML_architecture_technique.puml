@@ -1,0 +1,27 @@
+@startuml
+skinparam componentStyle rectangle
+
+actor "Utilisateur" as user
+node "Navigateur" as browser
+
+component "Front-end\nReact 19\nTypeScript 4.9\nTailwind 3.4\nshadcn/ui" as fe
+component "API Back-end\nNode.js 20\nExpress 4.21\nTypeScript 5.7" as be
+component "Auth\nJWT 9\nbcrypt 5" as auth
+component "ORM / DB access\nPrisma 6.4\nDrizzle 0.39" as orm
+database "PostgreSQL\npg 8.13\n@vercel/postgres 0.10" as db
+component "Email\nNodemailer 6.10" as mail
+component "Uploads\nMulter 1.4" as uploads
+component "CI\nGitHub Actions\npnpm 10.4" as ci
+
+user --> browser
+browser --> fe : HTTP(S)
+fe --> be : REST/JSON (axios)
+be --> auth
+be --> orm
+orm --> db
+be --> mail : SMTP
+be --> uploads
+ci ..> fe : tests
+ci ..> be : tests
+
+@enduml

@@ -1,0 +1,32 @@
+@startuml
+start
+
+:Le propriétaire de salle est connecté;
+:Accéder à la gestion des événements;
+:Appeler API GET /events;
+
+if (Action choisie ?) then (Ajouter un événement)
+  :Créer un nouvel événement;
+  :Saisir les informations de l'événement\n(titre, description, type);
+  :Définir les dates, horaires et disponibilités;
+  :Enregistrer le nouvel événement;
+  :Appeler API POST /events;
+else (Modifier un événement)
+  :Sélectionner un événement existant;
+  :Appeler API GET /events/{id};
+  :Modifier les informations de l'événement;
+  :Modifier les dates, horaires ou disponibilités;
+  :Enregistrer les modifications;
+  :Appeler API PUT /events/{id};
+endif
+
+:Mettre à jour le planning public;
+:Appeler API POST /planning/publish;
+
+if (Un artiste consulte le planning ?) then (Oui)
+  :Appeler API GET /planning/public;
+  :Afficher les créneaux disponibles;
+endif
+
+stop
+@enduml

@@ -1,0 +1,116 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+' =========================
+' CLASSES
+' =========================
+
+class Role {
+  +id_role: int
+  +nom_role: string
+}
+
+class Utilisateur {
+  +id_utilisateur: int
+  +mail: string
+  +nom: string
+  +image: string
+  +tel: string
+  +lien: string
+  +mot_de_passe: string
+  +description: string
+
+  +sInscrire(): void
+  +seConnecter(mail: string, motDePasse: string): bool
+  +seDeconnecter(): void
+  +modifierProfil(nom: string, tel: string, lien: string, image: string, description: string): void
+  +rechercher(terme: string, filtres: string): void
+  +consulterProfil(id: int): void
+}
+
+class Artiste {
+  +spotify: string
+  +linktree: string
+
+  +modifierLiens(spotify: string, linktree: string): void
+  +publierProfil(): void
+}
+
+class Institution {
+  +id_institution: int
+  +materiel: string
+  +adresse: string
+
+  +modifierInfos(adresse: string, materiel: string): void
+  +gererMateriel(materiel: string): void
+  +publierProfil(): void
+}
+
+class Departement {
+  +id_departement: int
+  +nom: string
+  +numero: string
+}
+
+class Categorie {
+  +id_categorie: int
+  +nom_categorie: string
+}
+
+class Conversation {
+  +id_conversation: int
+  +date_creation: datetime
+
+  +creer(): void
+  +ajouterParticipant(u: Utilisateur): void
+  +retirerParticipant(u: Utilisateur): void
+  +listerMessages(): void
+}
+
+class Message {
+  +id_message: int
+  +texte: string
+  +heure: datetime
+
+  +envoyer(conversation: Conversation, sender: Utilisateur, texte: string): void
+  +modifier(nouveauTexte: string): void
+  +supprimer(): void
+  +marquerCommeLu(): void
+}
+
+class Commentaire {
+  +id_commentaire: int
+  +contenu: string
+  +date_creation: datetime
+
+  +creer(auteur: Utilisateur, contenu: string): void
+  +modifier(contenu: string): void
+  +supprimer(): void
+}
+
+class Administrateur {
+  +bannirUtilisateur(u: Utilisateur): void
+  +supprimerMessage(m: Message): void
+  +supprimerCommentaire(c: Commentaire): void
+  +gererCategories(): void
+}
+
+' =========================
+' HERITAGE / RELATIONS
+' =========================
+
+Utilisateur --> Role : possède
+Artiste --|> Utilisateur
+Institution --> Utilisateur : lié à
+
+Conversation "1" o-- "*" Message : contient
+Utilisateur "*" -- "*" Conversation : participe
+
+Message --> Utilisateur : envoyé par
+Message --> Categorie : classé dans
+Commentaire --> Utilisateur : écrit par
+Commentaire --> Departement : concerne
+
+Administrateur --|> Utilisateur
+
+@enduml

@@ -1,0 +1,119 @@
+-- =========================
+-- 1) TABLES DE REFERENCE
+-- =========================
+
+CREATE TABLE role (
+  id_role      SERIAL PRIMARY KEY,
+  nom_role     VARCHAR(30) NOT NULL UNIQUE
+);
+
+CREATE TABLE departement (
+  id_dept      SERIAL PRIMARY KEY,
+  nom          VARCHAR(100) NOT NULL,
+  numero       VARCHAR(10)  NOT NULL UNIQUE
+);
+
+CREATE TABLE categorie (
+  id_cate      SERIAL PRIMARY KEY,
+  nom_cate     VARCHAR(100) NOT NULL UNIQUE
+);
+
+-- =========================
+-- 2) UTILISATEUR + PROFILS
+-- =========================
+
+CREATE TABLE utilisateur (
+  id_user      SERIAL PRIMARY KEY,
+  name         VARCHAR(120) NOT NULL,
+  mail         VARCHAR(255) NOT NULL UNIQUE,
+  image        VARCHAR(500),
+  tel          VARCHAR(30),
+  description  TEXT,
+  link         VARCHAR(500),
+  password     VARCHAR(255) NOT NULL,
+
+  role_id      INT NOT NULL REFERENCES role(id_role) ON UPDATE CASCADE,
+  dept_id      INT REFERENCES departement(id_dept) ON UPDATE CASCADE ON DELETE SET NULL,
+  cate_id      INT REFERENCES categorie(id_cate) ON UPDATE CASCADE ON DELETE SET NULL
+);
+
+-- Profil institution (1–1 optionnel)
+CREATE TABLE institution_profile (
+  user_id    INT PRIMARY KEY REFERENCES utilisateur(id_user) ON UPDATE CASCADE ON DELETE CASCADE,
+  material   TEXT,
+  address    VARCHAR(255)
+);
+
+-- Profil artiste (1–1 optionnel)
+CREATE TABLE artist_profile (
+  user_id    INT PRIMARY KEY REFERENCES utilisateur(id_user) ON UPDATE CASCADE ON DELETE CASCADE,
+  spotify    VARCHAR(500),
+  linktree   VARCHAR(500)
+);
+
+-- =========================
+-- 3) COMMENTAIRES
+-- =========================
+
+CREATE TABLE commentary (
+  id_comment                  SERIAL PRIMARY KEY,
+  content                     TEXT NOT NULL,
+  creation_date               TIMESTAMP NOT NULL DEFAULT NOW(),
+
+  author_user_id              INT NOT NULL REFERENCES utilisateur(id_user)
+                                ON UPDATE CASCADE ON DELETE CASCADE,
+
+  target_institution_user_id  INT NOT NULL REFERENCES utilisateur(id_user)
+                                ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE INDEX idx_commentary_target_institution
+  ON commentary(target_institution_user_id);
+
+CREATE INDEX idx_commentary_author
+  ON commentary(author_user_id);
+
+-- =========================
+-- 4) MESSAGERIE (CONVERSATION + MESSAGE)
+-- =========================
+
+CREATE TABLE conversation (
+  id_conv     SERIAL PRIMARY KEY,
+  created_at  TIMESTAMP NOT NULL DEFAULT NOW(),
+
+  user_a_id   INT NOT NULL REFERENCES utilisateur(id_user)
+              ON UPDATE CASCADE ON DELETE CASCADE,
+
+  user_b_id   INT NOT NULL REFERENCES utilisateur(id_user)
+              ON UPDATE CASCADE ON DELETE CASCADE,
+
+  -- Empêche conversation avec soi-même
+  CONSTRAINT chk_conversation_distinct_users CHECK (user_a_id <> user_b_id),
+
+  -- Empêche doublons exacts (A,B)
+  CONSTRAINT uq_conversation_pair UNIQUE (user_a_id, user_b_id)
+);
+
+CREATE INDEX idx_conversation_user_a
+  ON conversation(user_a_id);
+
+CREATE INDEX idx_conversation_user_b
+  ON conversation(user_b_id);
+
+CREATE TABLE message (
+  id_msg          SERIAL PRIMARY KEY,
+  texte           TEXT NOT NULL,
+  heure           TIMESTAMP NOT NULL DEFAULT NOW(),
+
+  sender_user_id  INT NOT NULL REFERENCES utilisateur(id_user)
+                  ON UPDATE CASCADE ON DELETE CASCADE,
+
+  conv_id         INT NOT NULL REFERENCES conversation(id_conv)
+                  ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE INDEX idx_message_conv
+  ON message(conv_id);
+
+CREATE INDEX idx_message_sender
+  ON message(sender_user_id);

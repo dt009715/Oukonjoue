@@ -1,0 +1,71 @@
+@startuml
+title Gestion du planning d'une salle (ajout / modification) + erreurs
+
+actor "Propriétaire de salle" as P
+actor "Artiste" as A
+boundary "Interface Planning\n(Front)" as UI
+control "API Oùkonjoue\n(Back)" as API
+database "Base de données\n(PostgreSQL)" as DB
+
+P -> UI : Accéder à la gestion du planning
+activate UI
+
+UI -> API : GET /api/evenements
+activate API
+
+API -> DB : SELECT * FROM evenement WHERE salle_id = ?
+activate DB
+DB --> API : Liste des événements (ou erreur)
+deactivate DB
+
+alt Chargement OK
+  API --> UI : 200 OK\nJSON: événements
+else Erreur DB / serveur
+  API --> UI : 500 Server Error\nJSON: erreur chargement planning
+  UI --> P : Afficher message d'erreur
+  deactivate API
+  deactivate UI
+end
+
+opt Suite uniquement si chargement OK
+
+  deactivate API
+
+  alt Ajouter un événement
+    UI -> API : POST /api/evenements\n{ données événement }
+    activate API
+    API -> DB : INSERT INTO evenement (...)
+    activate DB
+    DB --> API : Confirmation insertion (ou erreur)
+    deactivate DB
+
+    alt Création OK
+      API --> UI : 201 Created\nJSON: événement créé
+    else Erreur création
+      API --> UI : 400/500 Error\nJSON: erreur création événement
+      UI --> P : Afficher message d'erreur
+    end
+    deactivate API
+
+  else Modifier un événement
+    UI -> API : PUT /api/evenements/{id}\n{ données modifiées }
+    activate API
+    API -> DB : UPDATE evenement SET ...
+    activate DB
+    DB --> API : Confirmation mise à jour (ou erreur)
+    deactivate DB
+
+    alt Modification OK
+      API --> UI : 200 OK\nJSON: événement modifié
+    else Erreur modification
+      API --> UI : 404/500 Error\nJSON: erreur modification événement
+      UI --> P : Afficher message d'erreur
+    end
+    deactivate API
+  end
+
+  UI --> P : Planning mis à jour (si succès)
+  deactivate UI
+
+  A -> UI : Consulter le planning de la salle
+  activate UI

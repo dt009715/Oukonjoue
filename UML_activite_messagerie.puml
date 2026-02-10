@@ -1,0 +1,52 @@
+@startuml
+start
+
+:Afficher la page de connexion;
+:L'utilisateur saisit ses identifiants;
+:Appeler API POST /auth/login;
+
+if (Authentification valide ?) then (Oui)
+  :Accéder à la messagerie;
+  :Appeler API GET /conversations;
+
+  if (Conversation existante ?) then (Oui)
+    :Appeler API GET /conversations/{id}/messages;
+    :Ouvrir la conversation;
+  else (Non)
+    :Appeler API POST /conversations;
+    :Créer une nouvelle conversation;
+  endif
+
+  :Saisir un message;
+
+  if (Message vide ?) then (Oui)
+    :Afficher un message d'erreur;
+  else (Non)
+    :Envoyer le message;
+    :Appeler API POST /conversations/{id}/messages;
+
+    if (Envoi réussi ?) then (Oui)
+      :Appeler API GET /messages/{id}/status;
+      if (Message consulté par le destinataire ?) then (Oui)
+        :Aucune notification envoyée;
+      else (Non)
+
+        if (Message non consulté après un délai ?) then (Oui)
+          :Appeler API POST /notifications/email;
+          :Envoyer une notification par email;
+        endif
+
+      endif
+
+    else (Non)
+      :Afficher une erreur d'envoi;
+    endif
+
+  endif
+
+else (Non)
+  :Afficher un message d'erreur de connexion;
+endif
+
+stop
+@enduml
