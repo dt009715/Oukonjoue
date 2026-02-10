@@ -1,11 +1,19 @@
-import { InferInsertModel, InferSelectModel } from "drizzle-orm";
-import { comment } from "../schemas";
+﻿import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-// Un type pour le modèle d'un Comment au moment de la selection dans la DB
-export type Comment = InferSelectModel<typeof comment>;
+@Entity({ name: "comments" })
+export class Comment {
+  @PrimaryGeneratedColumn("uuid")
+  id!: string;
 
-// Un type pour le modèle d'un Comment au moment de son insertion dans la DB
-export type NewComment = InferInsertModel<typeof comment>;
+  @Column({ name: "institution_id", type: "uuid" })
+  institutionId!: string;
 
-// Un type qui sera un objet avec des clés optionnelles qui correspondent aux colonnes de notre table Comment
-export type CommentColumns = { [K in keyof Comment]?: boolean };
+  @Column({ type: "text" })
+  content!: string;
+
+  @Column({ type: "text", nullable: true })
+  author?: string;
+
+  @CreateDateColumn({ name: "created_at" })
+  createdAt!: Date;
+}

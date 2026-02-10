@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import Button from "../atoms/Button";
 
 const API_URL = "http://localhost:3001/institutions";
 
 interface Institution {
-  id: number;
+  id: string;
   name: string;
-  genre: string;
+  category: string;
   phone: string;
   address: string;
   mail: string;
@@ -15,21 +15,20 @@ interface Institution {
 }
 
 interface Comment {
-  id: number;
+  id: string;
   content: string;
 }
 
 const InstitutionDetailElement = ({
   institutionId,
 }: {
-  institutionId: number;
+  institutionId: string;
 }) => {
   const [institution, setInstitution] = useState<Institution | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Nouveaux états pour l'édition
   const [isEditing, setIsEditing] = useState(false);
   const [editedInstitution, setEditedInstitution] = useState<
     Partial<Institution>
@@ -44,8 +43,8 @@ const InstitutionDetailElement = ({
   }, [institutionId]);
 
   const checkAuthentication = () => {
-    const token = localStorage.getItem("authToken");
-    setIsAuthenticated(!!token);
+    const authFlag = localStorage.getItem("isAuthenticated");
+    setIsAuthenticated(!!authFlag);
   };
 
   const fetchInstitutionIdDetails = async () => {
@@ -75,7 +74,7 @@ const InstitutionDetailElement = ({
     if (newComment.trim() === "") return;
 
     if (!isAuthenticated) {
-      alert("Vous devez être connecté pour ajouter un commentaire.");
+      alert("Vous devez etre connecte pour ajouter un commentaire.");
       return;
     }
 
@@ -99,7 +98,7 @@ const InstitutionDetailElement = ({
 
   const handleDeleteInstitution = async () => {
     if (
-      window.confirm("Êtes-vous sûr de vouloir supprimer cette institution ?")
+      window.confirm("Etes-vous sur de vouloir supprimer cette institution ?")
     ) {
       try {
         const response = await fetch(`${API_URL}/deleteinst/${institutionId}`, {
@@ -109,7 +108,7 @@ const InstitutionDetailElement = ({
         if (!response.ok)
           throw new Error("Erreur lors de la suppression de l'institution.");
 
-        alert("Institution supprimée avec succès.");
+        alert("Institution supprimee avec succes.");
         window.location.href = "/";
       } catch (error) {
         console.error("Erreur:", error);
@@ -129,32 +128,27 @@ const InstitutionDetailElement = ({
         body: JSON.stringify(editedInstitution),
       });
 
-      if (!response.ok) throw new Error("Erreur lors de la mise à jour.");
+      if (!response.ok) throw new Error("Erreur lors de la mise a jour.");
 
-      alert("Institution mise à jour !");
+      alert("Institution mise a jour !");
       setIsEditing(false);
       fetchInstitutionIdDetails();
     } catch (error) {
       console.error("Erreur:", error);
-      alert("Erreur lors de la mise à jour.");
+      alert("Erreur lors de la mise a jour.");
     }
   };
 
   if (!institution) {
-    return <p>Chargement des détails de l'institution...</p>;
+    return <p>Chargement des details de l'institution...</p>;
   }
 
   return (
     <main className="min-h-screen bg-background flex flex-col items-center p-6">
       <header className="w-full max-w-4xl rounded-xl overflow-hidden shadow-lg">
-        {/*<img
-          src={institution.image || "/default-image.jpg"}
-          alt={institution.name}
-          className="w-full h-72 object-cover"
-        />*/}
         <img
           src="/images/imageRodia.png"
-          alt={`Image de la rodia`}
+          alt="Image de la rodia"
           className="w-25 rounded-lg border border-gray-300 shadow-sm"
         />
       </header>
@@ -171,10 +165,12 @@ const InstitutionDetailElement = ({
             >
               {institution.name}
             </h1>
-            <p className="text-gray-600 text-lg">Genre : {institution.genre}</p>
+            <p className="text-gray-600 text-lg">
+              Genre : {institution.category}
+            </p>
             <address className="mt-4 not-italic space-y-2">
               <p>
-                <strong>Téléphone :</strong> {institution.phone}
+                <strong>Telephone :</strong> {institution.phone}
               </p>
               <p>
                 <strong>Adresse :</strong> {institution.address}
@@ -206,18 +202,18 @@ const InstitutionDetailElement = ({
             <input
               type="text"
               placeholder="Genre"
-              value={editedInstitution.genre ?? institution.genre}
+              value={editedInstitution.category ?? institution.category}
               onChange={(e) =>
                 setEditedInstitution({
                   ...editedInstitution,
-                  genre: e.target.value,
+                  category: e.target.value,
                 })
               }
               className="w-full p-2 border rounded"
             />
             <input
               type="text"
-              placeholder="Téléphone"
+              placeholder="Telephone"
               value={editedInstitution.phone ?? institution.phone}
               onChange={(e) =>
                 setEditedInstitution({
@@ -321,7 +317,7 @@ const InstitutionDetailElement = ({
           </button>
           {!isAuthenticated && (
             <p className="text-red-500 text-sm mt-2">
-              Vous devez être connecté pour ajouter un commentaire.
+              Vous devez etre connecte pour ajouter un commentaire.
             </p>
           )}
         </form>

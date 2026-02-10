@@ -1,28 +1,22 @@
-import { and, eq } from "drizzle-orm";
-import { Request, Response } from "express";
-import { db } from "../config/pool";
-import { NewComment } from "../entities/comment";
-import { comments } from "../schemas";
+﻿import { Request, Response } from "express";
+import { AppDataSource } from "../config/data-source";
+import { Comment } from "../entities/Comment";
 import { logger } from "../utils";
 
 export const getCommentsByInstitution = async (req: Request, res: Response) => {
   try {
-    const { parentId } = req.params;
+    const { institutionId } = req.params;
 
-    const commentList = await db.query.comments.findMany({
-      where: eq(comments.commentId, parentId),
-      orderBy: (comments) => comments.createdAt.desc(),
-      with: {
-        user: {
-          columns: { id: true, username: true },
-        },
-      },
+    const repo = AppDataSource.getRepository(Comment);
+    const commentList = await repo.find({
+      where: { institutionId },
+      order: { createdAt: "DESC" },
     });
 
     res.status(200).json(commentList);
   } catch (error: any) {
     logger.error(
-      `Erreur lors de la récupération des commentaires: ${error.message}`
+      `Erreur lors de la recuperation des commentaires: ${error.message}`
     );
     res.status(500).json({ message: "Erreur serveur", error: error.message });
   }
@@ -30,22 +24,17 @@ export const getCommentsByInstitution = async (req: Request, res: Response) => {
 
 export const addComment = async (req: Request, res: Response) => {
   try {
-    const { content, authorId, postId } = req.body;
+    const { content, institutionId, author } = req.body;
 
-    if (!content || !authorId || !postId) {
+    if (!content || !institutionId) {
       return res.status(400).json({ message: "Tous les champs sont requis" });
     }
 
-    const newComment: NewComment = {
-      content,
-      authorId,
-      postId,
-      createdAt: new Date(),
-    };
+    const repo = AppDataSource.getRepository(Comment);
+    const comment = repo.create({ content, institutionId, author });
+    const saved = await repo.save(comment);
 
-    await db.insert(comments).values(newComment).execute();
-
-    res.status(201).json({ message: "Commentaire ajouté avec succès !" });
+    res.status(201).json(saved);
   } catch (error: any) {
     logger.error(`Erreur lors de l'ajout du commentaire: ${error.message}`);
     res.status(500).json({ message: "Erreur serveur", error: error.message });
@@ -55,29 +44,11 @@ export const addComment = async (req: Request, res: Response) => {
 export const deleteComment = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { userId } = req.body;
 
-    // check commentary exist
-    const comment = await db.query.comments.findFirst({
-      where: eq(comments.id, id),
-    });
+    const repo = AppDataSource.getRepository(Comment);
+    await repo.delete({ id });
 
-    if (!comment) {
-      return res.status(404).json({ message: "Commentaire non trouvé" });
-    }
-
-    // check author
-    if (comment.authorId !== userId) {
-      return res.status(403).json({ message: "Action non autorisée" });
-    }
-
-    // delete commment
-    await db
-      .delete(comments)
-      .where(and(eq(comments.id, id), eq(comments.authorId, userId)))
-      .execute();
-
-    res.status(200).json({ message: "Commentaire supprimé avec succès !" });
+    res.status(200).json({ message: "Commentaire supprime avec succes !" });
   } catch (error: any) {
     logger.error(
       `Erreur lors de la suppression du commentaire: ${error.message}`

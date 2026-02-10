@@ -1,4 +1,4 @@
-import axios from "axios";
+﻿import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../App.scss";
@@ -25,14 +25,12 @@ const LoginElement = () => {
         { withCredentials: true }
       );
 
-      console.log(data);
-
-      if (data?.token) {
-        localStorage.setItem("token", data.token);
-        alert("Connexion réussie !");
+      if (data?.success) {
+        localStorage.setItem("isAuthenticated", "true");
+        alert("Connexion reussie !");
         navigate("/");
       } else {
-        setError("Erreur de connexion : token manquant.");
+        setError(data?.message || "Erreur de connexion.");
       }
     } catch (err: any) {
       console.error("Erreur lors de la connexion:", err);
@@ -60,7 +58,7 @@ const LoginElement = () => {
           <label htmlFor="email">Email</label>
           <input
             id="email"
-            type="text" // <- Change "email" to "text" to bypass browser validation
+            type="text"
             placeholder="Adresse e-mail"
             value={mail}
             onChange={(e) => setMail(e.target.value)}

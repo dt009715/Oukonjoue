@@ -1,7 +1,8 @@
-import cookieParser from "cookie-parser";
+﻿import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
+import { AppDataSource } from "./config/data-source";
 import commentRoutes from "./routes/comments.routes";
 import routes from "./routes/index.routes";
 
@@ -10,7 +11,7 @@ const app = express();
 const { PORT, FRONTEND_URL } = process.env;
 
 app.use(cookieParser());
-console.log("FRONTEND_URL utilisé pour CORS :", FRONTEND_URL);
+console.log("FRONTEND_URL utilise pour CORS :", FRONTEND_URL);
 
 app.use(
   cors({
@@ -30,8 +31,17 @@ app.use((req, res, next) => {
 app.use("/api/comments", commentRoutes);
 app.use("/", routes);
 
-app.listen(PORT, () => {
-  console.log(`Serveur lancé sur http://localhost:${PORT}`);
-});
+const port = PORT ? Number(PORT) : 3001;
+
+AppDataSource.initialize()
+  .then(() => {
+    app.listen(port, () => {
+      console.log(`Serveur lance sur http://localhost:${port}`);
+    });
+  })
+  .catch((error) => {
+    console.error("Erreur de connexion a la base de donnees:", error);
+    process.exit(1);
+  });
 
 export default app;

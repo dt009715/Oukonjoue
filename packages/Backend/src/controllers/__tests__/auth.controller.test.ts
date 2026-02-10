@@ -1,27 +1,17 @@
-import type { Request, Response } from "express";
+﻿import type { Request, Response } from "express";
 
 process.env.JWT_SECRET = "test-secret";
 process.env.NODE_ENV = "test";
 
-const mockPrisma = {
-  user: {
-    findUnique: jest.fn(),
-  },
-};
-
-jest.mock("../../config/database", () => ({
-  __esModule: true,
-  default: mockPrisma,
-}));
-
+const mockFindUserByEmail = jest.fn();
 const mockRegisterUser = jest.fn();
 
 jest.mock("../../models/UserModel", () => ({
+  findUserByEmail: mockFindUserByEmail,
   registerUser: mockRegisterUser,
 }));
 
 jest.mock("bcrypt", () => ({
-  hash: jest.fn().mockResolvedValue("hashed-password"),
   compare: jest.fn().mockResolvedValue(true),
 }));
 
@@ -59,8 +49,8 @@ describe("auth.controller register", () => {
     jest.clearAllMocks();
   });
 
-  it("retourne 400 si l'email existe déjà", async () => {
-    mockPrisma.user.findUnique.mockResolvedValue({ id: 1 });
+  it("retourne 400 si l'email existe deja", async () => {
+    mockFindUserByEmail.mockResolvedValue({ id: "uuid" });
     const res = createMockResponse();
 
     await register(buildRequest(validPayload), res);
@@ -68,15 +58,15 @@ describe("auth.controller register", () => {
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({
-        message: "Cet email est déjà utilisé",
+        message: "Cet email est deja utilise",
         success: false,
       })
     );
     expect(mockRegisterUser).not.toHaveBeenCalled();
   });
 
-  it("crée un utilisateur quand le payload est valide", async () => {
-    mockPrisma.user.findUnique.mockResolvedValue(null);
+  it("cree un utilisateur quand le payload est valide", async () => {
+    mockFindUserByEmail.mockResolvedValue(null);
     const res = createMockResponse();
 
     await register(buildRequest(validPayload), res);
@@ -84,14 +74,14 @@ describe("auth.controller register", () => {
     expect(mockRegisterUser).toHaveBeenCalledWith(
       expect.objectContaining({
         mail: validPayload.mail,
-        password: "hashed-password",
+        password: validPayload.password,
         role: "ARTISTS",
       })
     );
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({
-        message: "Vous êtes inscrit avec succès",
+        message: "Vous etes inscrit avec succes",
         success: true,
       })
     );
@@ -104,7 +94,7 @@ describe("auth.controller login", () => {
   });
 
   it("retourne 401 si l'utilisateur est introuvable", async () => {
-    mockPrisma.user.findUnique.mockResolvedValue(null);
+    mockFindUserByEmail.mockResolvedValue(null);
     const res = createMockResponse();
 
     await login(
@@ -115,15 +105,16 @@ describe("auth.controller login", () => {
     expect(res.status).toHaveBeenCalledWith(401);
     expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({
-        message: "Utilisateur non trouvé avec l'email",
+        message: "Utilisateur non trouve avec l'email",
       })
     );
   });
 
-  it("retourne 200 et ajoute un cookie en cas de succès", async () => {
-    mockPrisma.user.findUnique.mockResolvedValue({
-      id: 42,
+  it("retourne 200 et ajoute un cookie en cas de succes", async () => {
+    mockFindUserByEmail.mockResolvedValue({
+      id: "uuid",
       password: "hash",
+      role: "ARTISTS",
     });
     const res = createMockResponse();
 
@@ -142,10 +133,9 @@ describe("auth.controller login", () => {
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({
-        message: "Vous êtes connecté",
+        message: "Vous etes connecte",
         success: true,
       })
     );
   });
 });
-

@@ -1,20 +1,21 @@
-import prisma from "../config/database";
+﻿import { AppDataSource } from "../config/data-source";
+import { Artist } from "../entities/Artist";
 
 // Get all artists
 export const getAllArtists = async () => {
-  return await prisma.artists.findMany();
+  return await AppDataSource.getRepository(Artist).find();
 };
 
 // Get artist by ID
 export const getArtistById = async (id: string) => {
-  return await prisma.artists.findUnique({
-    where: { id: Number(id) },
+  return await AppDataSource.getRepository(Artist).findOne({
+    where: { id },
   });
 };
 
 // Get artists by category
 export const getArtistsByCategory = async (category: string) => {
-  return await prisma.artists.findMany({
+  return await AppDataSource.getRepository(Artist).find({
     where: { category },
   });
 };
@@ -22,29 +23,22 @@ export const getArtistsByCategory = async (category: string) => {
 // Create a new artist
 export const createArtist = async (data: {
   name: string;
-  phone: string;
+  phone?: string;
   city: string;
   mail: string;
-  category: string;
-  userId: number;
+  category?: string;
+  description?: string;
+  image?: string;
+  userId?: string;
 }) => {
-  return await prisma.artists.create({
-    data: {
-      name: data.name,
-      phone: data.phone,
-      mail: data.mail,
-      category: data.category,
-      city: data.city,
-      user: { connect: { id: data.userId } },
-    },
-  });
+  const repo = AppDataSource.getRepository(Artist);
+  const artist = repo.create(data);
+  return await repo.save(artist);
 };
 
 // Delete an artist by ID
 export const deleteArtist = async (id: string) => {
-  return await prisma.artists.delete({
-    where: { id: Number(id) },
-  });
+  return await AppDataSource.getRepository(Artist).delete({ id });
 };
 
 export const updateArtistById = async (
@@ -59,8 +53,7 @@ export const updateArtistById = async (
     image?: string;
   }
 ) => {
-  return await prisma.artists.update({
-    where: { id: Number(id) },
-    data: updatedData,
-  });
+  const repo = AppDataSource.getRepository(Artist);
+  await repo.update({ id }, updatedData);
+  return repo.findOne({ where: { id } });
 };

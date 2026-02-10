@@ -1,20 +1,20 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import Button from "../atoms/Button";
 
 const API_URL = "http://localhost:3001/artistes";
 
 interface Artist {
-  id: number;
+  id: string;
   name: string;
-  genre: string;
+  category: string;
   phone: string;
-  address: string;
+  city: string;
   mail: string;
   description: string;
   image: string;
 }
 
-const ArtistDetailElement = ({ artistId }: { artistId: number }) => {
+const ArtistDetailElement = ({ artistId }: { artistId: string }) => {
   const [artist, setArtist] = useState<Artist | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editedArtist, setEditedArtist] = useState<Partial<Artist>>({});
@@ -37,7 +37,7 @@ const ArtistDetailElement = ({ artistId }: { artistId: number }) => {
   };
 
   const handleDeleteArtist = async () => {
-    if (window.confirm("Êtes-vous sûr de vouloir supprimer cet artiste ?")) {
+    if (window.confirm("Etes-vous sur de vouloir supprimer cet artiste ?")) {
       try {
         const response = await fetch(`${API_URL}/deleteartist/${artistId}`, {
           method: "DELETE",
@@ -46,7 +46,7 @@ const ArtistDetailElement = ({ artistId }: { artistId: number }) => {
         if (!response.ok)
           throw new Error("Erreur lors de la suppression de l'artiste.");
 
-        alert("Artiste supprimé avec succès.");
+        alert("Artiste supprime avec succes.");
         window.location.href = "/";
       } catch (error) {
         console.error("Erreur:", error);
@@ -66,31 +66,24 @@ const ArtistDetailElement = ({ artistId }: { artistId: number }) => {
         body: JSON.stringify(editedArtist),
       });
 
-      if (!response.ok) throw new Error("Erreur lors de la mise à jour.");
+      if (!response.ok) throw new Error("Erreur lors de la mise a jour.");
 
-      alert("Artiste mis à jour !");
+      alert("Artiste mis a jour !");
       setIsEditing(false);
       fetchArtistDetails();
     } catch (error) {
       console.error("Erreur:", error);
-      alert("Erreur lors de la mise à jour.");
+      alert("Erreur lors de la mise a jour.");
     }
   };
 
   if (!artist) {
-    return <p>Chargement des détails de l'artiste...</p>;
+    return <p>Chargement des details de l'artiste...</p>;
   }
-
-  console.log("isEditing", isEditing);
 
   return (
     <main className="min-h-screen bg-background flex flex-col items-center p-6">
       <header className="w-full max-w-4xl rounded-xl overflow-hidden shadow-lg">
-        {/*<img
-    src={artist.image || "/default-image.jpg"}
-    alt={artist.name}
-    className="w-full max-w-4xl h-72 object-cover rounded-xl shadow-lg"
-  />*/}
         <img
           src="/images/imageRodia.png"
           alt="Image de la Rodia"
@@ -100,13 +93,13 @@ const ArtistDetailElement = ({ artistId }: { artistId: number }) => {
 
       <section className="bg-white w-full max-w-4xl p-6 rounded-xl shadow-md mt-6">
         <h1 className="text-3xl font-bold text-gray-900">{artist.name}</h1>
-        <p className="text-gray-600 text-lg">Genre : {artist.genre}</p>
+        <p className="text-gray-600 text-lg">Genre : {artist.category}</p>
         <ul className="mt-4 space-y-2 text-gray-700">
           <li>
-            <strong>Téléphone :</strong> {artist.phone}
+            <strong>Telephone :</strong> {artist.phone}
           </li>
           <li>
-            <strong>Adresse :</strong> {artist.address}
+            <strong>Ville :</strong> {artist.city}
           </li>
           <li>
             <strong>Mail :</strong> {artist.mail}
@@ -157,15 +150,15 @@ const ArtistDetailElement = ({ artistId }: { artistId: number }) => {
           <input
             type="text"
             placeholder="Genre"
-            value={editedArtist.genre || ""}
+            value={editedArtist.category || ""}
             onChange={(e) =>
-              setEditedArtist({ ...editedArtist, genre: e.target.value })
+              setEditedArtist({ ...editedArtist, category: e.target.value })
             }
             className="w-full p-2 border rounded"
           />
           <input
             type="text"
-            placeholder="Téléphone"
+            placeholder="Telephone"
             value={editedArtist.phone || ""}
             onChange={(e) =>
               setEditedArtist({ ...editedArtist, phone: e.target.value })
@@ -174,10 +167,10 @@ const ArtistDetailElement = ({ artistId }: { artistId: number }) => {
           />
           <input
             type="text"
-            placeholder="Adresse"
-            value={editedArtist.address || ""}
+            placeholder="Ville"
+            value={editedArtist.city || ""}
             onChange={(e) =>
-              setEditedArtist({ ...editedArtist, address: e.target.value })
+              setEditedArtist({ ...editedArtist, city: e.target.value })
             }
             className="w-full p-2 border rounded"
           />
